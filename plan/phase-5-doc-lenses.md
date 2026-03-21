@@ -4,25 +4,10 @@
 
 ## Files to Create
 
-- `agents/tagger.md` — file labelling agent (haiku)
-- `lenses/labelling.md` — file categorization lens
+- `lenses/labelling.md` — file categorization lens (labelling algorithm absorbed into doer.md)
 - `lenses/jsdoc.md` — JSDoc quality lens
 - `lenses/markdown.md` — markdown quality lens
 - `lenses/docs-coverage.md` — documentation coverage lens
-
-## Tagger Agent
-
-Ported from dossier/agents/tagger.md. Model: haiku.
-
-Handles the labelling lens. Batch file analyzer:
-1. Fast-path: check learned category patterns (directory/naming)
-2. Read file content, determine category from taxonomy
-3. Write one-line purpose (under 80 chars, factual)
-4. Extract internal dependencies (up to 5)
-5. Generate header string in chosen format (JSDoc or ASCII box)
-6. Flag ambiguous files
-
-Output: structured table + per-file header blocks.
 
 ## Doc Lenses
 
@@ -33,9 +18,11 @@ name: Labelling
 description: File categorization with JSDoc or ASCII box headers
 scope: file
 type: docs
-agent: tagger
+agent: doer
 ---
 ```
+
+Labelling algorithm (fast-path patterns, header generation, batch processing) is now part of doer.md's "Labelling Algorithm" section.
 
 Detects:
 - Files without any dossier header (`@dossier` or `╔...╝` box)

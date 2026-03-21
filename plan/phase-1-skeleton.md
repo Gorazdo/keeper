@@ -4,10 +4,10 @@
 
 ## Files Created
 
-- `.claude-plugin/plugin.json` — manifest v1.0.0
+- `.claude-plugin/plugin.json` — manifest v1.2.0
 - `CLAUDE.md` — architecture overview
 - `README.md` — user-facing docs
-- `agents/personality.md` — keeper voice, output format, principles
+- `personality.md` — keeper voice, output format, principles (moved to root)
 - `plan/` — this implementation plan
 
 ## Key Decisions

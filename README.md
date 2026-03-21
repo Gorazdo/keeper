@@ -1,7 +1,7 @@
 # keeper
 
 Autonomous repository hygiene for [Claude Code](https://claude.ai/claude-code).
-Scans your codebase through **lenses**, creates small focused PRs while you sleep.
+Scans your codebase through **12 lenses**, creates small focused PRs while you sleep.
 
 ## User Journey
 
@@ -9,11 +9,11 @@ Scans your codebase through **lenses**, creates small focused PRs while you slee
 
 ```
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-🔒 Keeper v1.1.0 | setup | ✅ Complete
+🔒 Keeper v1.2.0 | setup | ✅ Complete
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 my-app · TypeScript/Next.js
-8 lenses active · test runner: vitest
+12 lenses active · test runner: vitest
 
 Files created:
   .keeperrc.json          config
@@ -31,7 +31,7 @@ Files created:
 
 ```
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-🔒 Keeper v1.1.0 | scan | 8 lenses active
+🔒 Keeper v1.2.0 | scan | 12 lenses active
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 🔧 untangling    3 functions · processOrder CC 24
@@ -54,7 +54,7 @@ Top priorities:
 
 ```
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-🔒 Keeper v1.1.0 | run | 📊 Session Report
+🔒 Keeper v1.2.0 | run | 📊 Session Report
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 ✅ processOrder    — CC: 24→8   cov: 72%→86%
@@ -72,13 +72,13 @@ Lenses worked: untangling, labelling
 
 | | Lens | Detects |
 |---|---|---|
-| 🔧 | untangling | Deep nesting, boolean chains, too many responsibilities |
+| 🔧 | untangling | Deep nesting, tangled branching, boolean chains |
 | 🔄 | modernization | Imperative→declarative, callbacks→async, stringly-typed |
 | 🧪 | testability | Untested exports, no seams, logic tangled with effects |
 | 🧱 | boundaries | Shallow, leaky, or blurred interfaces |
-| 🧹 | micro-hygiene | Unnecessary mutability, manual work, redundant verbosity |
-| 🔒 | type-safety | `any` usage, assertions, missing return types |
-| 🔗 | friction | Scattered concepts, test deserts |
+| 🧹 | micro-hygiene | Verbose→concise, mutable→immutable, small compounds |
+| 🔒 | type-safety | Type holes, unvalidated boundaries, opaque contracts |
+| 🔗 | friction | Scattered concepts, test deserts, navigation cost |
 | ⚠️ | error-handling | Swallowed errors, inconsistent strategies, missing paths |
 
 | | Lens | Detects |
@@ -91,11 +91,12 @@ Lenses worked: untangling, labelling
 ## Commands
 
 ```
-/keeper:setup    Bootstrap config, detect stack, choose lenses
+/keeper:setup    Bootstrap config, detect stack
 /keeper:scan     Read-only health report across active lenses
 /keeper:run      Autonomous loop — scan → pick → fix → PR → repeat
 /keeper:sleep    Consolidate learnings into long-term memory
 /keeper:deploy   Generate tmux script for background daemon
+/keeper:help     Visual overview + interactive Q&A
 ```
 
 ## Memory

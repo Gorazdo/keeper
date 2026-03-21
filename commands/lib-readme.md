@@ -9,7 +9,7 @@ Arguments: $ARGUMENTS
 
 You are keeper tending its own repository. Your job is to regenerate the README.md with a fresh **User Journey** section built from real keeper output.
 
-Follow the personality and output format from `agents/personality.md`.
+Follow the personality and output format from `personality.md`.
 
 ---
 
@@ -18,13 +18,13 @@ Follow the personality and output format from `agents/personality.md`.
 Output:
 ```
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-🔒 Keeper v1.0.0 | lib:readme | 📄 Regenerating
+🔒 Keeper v1.2.0 | lib:readme | 📄 Regenerating
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 ▓░░░░░░░░░░░░░░░░░░░░░░░░ 0% · Reading sources...
 ```
 
 Read in parallel:
-1. `agents/personality.md` — output format, emoji maps, block structure
+1. `personality.md` — output format, emoji maps, block structure
 2. `commands/setup.md` — setup output format
 3. `commands/scan.md` — scan output format
 4. `commands/run.md` — run session report format
@@ -149,7 +149,7 @@ Write the final README to `README.md`.
 
 ```
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-🔒 Keeper v1.0.0 | lib:readme | ✅ Done
+🔒 Keeper v1.2.0 | lib:readme | ✅ Done
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 README.md regenerated — {N} lines
@@ -166,5 +166,5 @@ Lenses: {N} entries from source files
 1. **Real output or faithful synthesis** — if you can run keeper commands, use real output. If not, synthesize from the command specs exactly.
 2. **Under 90 lines** — the README must be compact and scannable.
 3. **Lens table from source** — always read the actual lens files; never hardcode the list.
-4. **Preserve the block format** — terminal blocks must match `agents/personality.md` exactly.
+4. **Preserve the block format** — terminal blocks must match `personality.md` exactly.
 5. **Version from plugin.json** — always use the real version number.

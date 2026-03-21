@@ -36,7 +36,7 @@ Glob all files matching the provided source globs. Exclude files matching exclus
 
 ### Step 2: Load Active Lenses
 
-Read each active lens file from the `lenses/` directory. Each lens file contains:
+Read each active lens file from the keeper plugin's `lenses/` directory (resolved relative to the plugin install path, not the target project). Each lens file contains:
 - **Frontmatter** — `name`, `description`, `scope`, `type` (code/docs), `agent`
 - **What to detect** — specific patterns and smells
 - **How to detect** — concrete detection techniques

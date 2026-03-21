@@ -3,12 +3,12 @@ name: Labelling
 description: File categorization with JSDoc or ASCII box headers — unlabeled files, stale headers, ambiguous files
 scope: file
 type: docs
-agent: tagger
+agent: doer
 model: haiku
 spawn: none
 ---
 
-> **Scanner vs Tagger responsibility:** The scanner identifies *which* files lack or have stale labels. The tagger determines the category and generates the header content.
+> **Scanner vs Doer responsibility:** The scanner identifies *which* files lack or have stale labels. The doer (in labelling mode) determines the category, generates the header content, and applies it.
 
 ## What this lens detects
 
@@ -40,11 +40,11 @@ Files where the content has changed since the header was last applied. The heade
 
 ### Class 3: Ambiguous files
 
-Files that don't clearly fit any category in the current taxonomy. Previously flagged by the tagger as ambiguous.
+Files that don't clearly fit any category in the current taxonomy. Previously flagged by the doer as ambiguous.
 
 **What to look for:**
 - Check `_keeper/memory.json` for any files previously flagged as ambiguous
-- These files were scanned but the tagger couldn't confidently assign a category
+- These files were scanned but the doer couldn't confidently assign a category
 
 ## How to detect
 

@@ -9,7 +9,7 @@ Arguments: $ARGUMENTS
 
 Quick, read-only health report. Spawns the scanner with all active lenses to show the current state of the codebase. No changes are made.
 
-Follow the personality and output format from `agents/personality.md`.
+Follow the personality and output format from `personality.md`.
 
 ## HARD RULES
 
@@ -43,7 +43,7 @@ Output initial block:
 
 ```
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-🔒 Keeper v1.0.0 | scan | {N} lenses active
+🔒 Keeper v1.2.0 | scan | {N} lenses active
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 ▓▓▓▓░░░░░░░░░░░░░░░░░░░░░ 20% · Scanning...
 ```
@@ -72,7 +72,7 @@ Output the Keeper Block:
 
 ```
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-🔒 Keeper v1.0.0 | scan | {N} lenses active
+🔒 Keeper v1.2.0 | scan | {N} lenses active
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 {For each active lens with findings, one line:}
@@ -111,7 +111,7 @@ Top priorities:
 
 ```
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-🔒 Keeper v1.0.0 | scan | ✅ All clear
+🔒 Keeper v1.2.0 | scan | ✅ All clear
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 No issues found across {N} active lenses.

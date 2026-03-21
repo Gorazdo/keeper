@@ -22,7 +22,7 @@ The main command, designed for `/loop` integration.
 4. **CALIBRATE** — if first time for this lens, run progressive calibration
 5. **WORK** — dispatch to lens's agent for 3-5 targets:
    - Code lenses → doer agent (one function at a time, full loop)
-   - Labelling → tagger agent (batch of ~20 files)
+   - Labelling → doer agent in labelling mode (batch of ~20 files)
    - Other doc lenses → doer agent
 6. **PR** — create PR for completed batch:
    - One lens per PR

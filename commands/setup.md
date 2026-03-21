@@ -7,9 +7,13 @@ allowed-tools: Read, Write, Glob, Grep, Bash(git *, ls *, wc *, cat package.json
 
 Arguments: $ARGUMENTS
 
+Accepted arguments:
+- `--reconfigure` — re-run setup even if `.keeperrc.json` exists (overwrites config)
+- No arguments — default bootstrap
+
 You are bootstrapping keeper for this project. This is a minimal, fast setup — no calibration happens here. Each lens calibrates itself on first use.
 
-Follow the personality and output format from `agents/personality.md`. Every response uses the Keeper Block format.
+Follow the personality and output format from `personality.md`. Every response uses the Keeper Block format.
 
 ## HARD RULES
 
@@ -26,7 +30,7 @@ Follow the personality and output format from `agents/personality.md`. Every res
 Output the Keeper Block header:
 ```
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-🔒 Keeper v1.0.0 | setup | Phase 1/3
+🔒 Keeper v1.2.0 | setup | Phase 1/3
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 ▓░░░░░░░░░░░░░░░░░░░░░░░░ 10% · Detecting project...
 ```
@@ -117,7 +121,7 @@ Write `.keeperrc.json`:
   "activeLenses": ["untangling", "modernization", "testability", "boundaries", "micro-hygiene", "type-safety", "friction", "error-handling", "labelling", "jsdoc", "markdown", "docs-coverage"],
   "tags": {
     "headerFormat": "jsdoc",
-    "categories": []
+    "categories": ["{detected from stack}"]
   },
   "untangle": {
     "complexityThreshold": 10,
@@ -140,6 +144,16 @@ Write `.keeperrc.json`:
   }
 }
 ```
+
+### Category detection for `tags.categories`
+
+Seed initial categories by scanning the project's directory structure and file naming patterns:
+- **React/Next.js**: Component, Hook, Page, Route, Layout, Context, Provider, Utility, Config, Test, Type
+- **Express/Fastify**: Route, Controller, Middleware, Service, Model, Utility, Config, Test, Type
+- **Generic Node.js**: Service, Utility, Helper, Config, Test, Type, Constant
+- **Fallback** (if stack not recognized): Service, Utility, Config, Test, Type, Helper
+
+Always include at least: Utility, Config, Test, Type. Add stack-specific categories on top. The doer will refine these during labelling calibration on first run.
 
 Write `_keeper/memory.json`:
 ```json
@@ -165,7 +179,7 @@ Write `_keeper/memory.json`:
     "lastRun": null,
     "lastSleep": null,
     "pendingConsolidation": [],
-    "openPRs": []
+    "openPRs": []  // Each entry: { "number": N, "lens": "...", "branch": "keeper/...", "targets": ["fn@file:line", ...], "status": "pending"|"merged"|"rejected", "createdAt": "ISO8601" }
   },
   "summary": ""
 }
@@ -228,7 +242,7 @@ Update progress to 100%.
 Output the final Keeper Block:
 ```
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-🔒 Keeper v1.0.0 | setup | ✅ Complete
+🔒 Keeper v1.2.0 | setup | ✅ Complete
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 {projectName} · {language}/{framework}

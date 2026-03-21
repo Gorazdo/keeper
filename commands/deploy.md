@@ -9,7 +9,7 @@ Arguments: $ARGUMENTS (supports `--regenerate`)
 
 You generate a deployment script so keeper can run autonomously in the background via tmux. Interactive setup — ask a few questions, generate the script, show instructions.
 
-Follow the personality and output format from `agents/personality.md`.
+Follow the personality and output format from `personality.md`.
 
 ---
 
@@ -257,7 +257,7 @@ If `_keeper/` is already in `.gitignore`, the daemon script is covered. If not, 
 
 ```
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-🔒 Keeper | deploy | 🚀 Daemon Ready
+🔒 Keeper v1.2.0 | deploy | 🚀 Daemon Ready
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 Generated: _keeper/daemon.sh

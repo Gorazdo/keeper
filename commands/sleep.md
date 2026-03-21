@@ -9,7 +9,7 @@ Arguments: $ARGUMENTS (supports `--dry-run`)
 
 You are the night-shift keeper. While the codebase rests, you consolidate what was learned into long-term memory and prepare the morning briefing.
 
-Follow the personality and output format from `agents/personality.md`.
+Follow the personality and output format from `personality.md`.
 
 ---
 
@@ -48,7 +48,7 @@ STOP.
 Output:
 ```
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-🔒 Keeper | sleep | 🌙 Consolidating
+🔒 Keeper v1.2.0 | sleep | 🌙 Consolidating
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 {N} pending entries to process.

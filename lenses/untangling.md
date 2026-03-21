@@ -79,6 +79,8 @@ Report the classification alongside the score — the doer needs to know *which 
 - **warning** — CC score > 2× threshold (e.g., 20+ when threshold is 10)
 - **suggestion** — CC score > threshold but ≤ 2× threshold
 
+Threshold is read from `.keeperrc.json` → `untangle.complexityThreshold` (default: 10).
+
 ## Examples
 
 ```typescript

@@ -10,18 +10,19 @@ Autonomous repository hygiene agent. Scans, labels, untangles, and tends codebas
 
 ```
 keeper/
-├── .claude-plugin/plugin.json      # Plugin manifest v1.0.0
+├── personality.md                   # Keeper voice, output format, principles
+├── .claude-plugin/plugin.json       # Plugin manifest v1.2.0
 ├── agents/
-│   ├── personality.md               # Keeper voice, output format, principles
 │   ├── scanner.md                   # Unified multi-lens scanner (haiku)
-│   ├── doer.md                      # Code refactoring agent (sonnet/opus)
-│   └── tagger.md                    # File labelling agent (haiku)
+│   └── doer.md                      # Universal worker — all 12 lenses (model per lens)
 ├── commands/
 │   ├── setup.md                     # Bootstrap config + memory + encyclopedia
 │   ├── scan.md                      # Quick read-only health report
 │   ├── run.md                       # Autonomous work loop
 │   ├── sleep.md                     # Memory consolidation
-│   └── deploy.md                    # Generate tmux/bash scripts
+│   ├── deploy.md                    # Generate tmux/bash scripts
+│   ├── help.md                      # Visual overview + interactive Q&A
+│   └── lib-readme.md                # Self-tending README generator
 ├── lenses/                          # 8 code + 4 docs lenses
 │   ├── untangling.md                # code · function
 │   ├── modernization.md             # code · function
@@ -71,13 +72,13 @@ keeper/
 
 ## Multi-Model Routing
 
-Each lens declares its own `model:` and `spawn:` in frontmatter. The orchestrator reads these at dispatch time.
+Each lens declares its own `model:` and `spawn:` in frontmatter. The orchestrator reads these at dispatch time. All lenses use the doer agent; model/spawn override per lens.
 
 | Lens | Model | Spawn | Rationale |
 |------|-------|-------|-----------|
 | micro-hygiene | haiku | none | Simple single-file transforms |
 | jsdoc | haiku | none | Mechanical doc additions |
-| labelling | haiku | none | Classification, no reasoning |
+| labelling | haiku | none | Batch file classification (doer labelling mode) |
 | untangling | sonnet | none | Structural reasoning |
 | modernization | sonnet | none | Paradigm-level reasoning |
 | testability | sonnet | subagent | Needs to explore test files, deps |
@@ -109,8 +110,8 @@ Keeper tracks PRs it creates and reconciles them before each scan cycle.
 
 ## Key Patterns
 
-- Lenses define detection + agent + PR strategy
-- Progressive calibration: each lens calibrates on first use
+- Lenses define detection + agent assignment; PR batching strategy is orchestrator-level (run command)
+- Progressive calibration: labelling and untangling calibrate on first supervised run (see `run.md` Step 0f); other lenses use config defaults
 - One lens per PR ("midnight snacks")
 - Sleep consolidation: triage → consolidate → prune → integrate → plan → brief
 - Backpressure gates: tests pass, coverage held, complexity down, signature unchanged

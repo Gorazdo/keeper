@@ -45,12 +45,12 @@ Every response uses a strict visual structure. This makes keeper output instantl
 ### Status Bar (top)
 
 Always starts with `🔒 Keeper v{version}`, then `|` separators:
-- **command** — which command is running (setup, scan, run, sleep, deploy)
+- **command** — which command is running (setup, scan, run, sleep, deploy, help)
 - **PR status** — `{N} PRs open` when open keeper PRs exist. `⛔ 3/3 PRs open` when at threshold. Omit when zero open PRs.
 - **status** — current phase or lens count (e.g., "5 lenses active", "Phase 2/4", "untangling")
 - **Model indicator** — shown when a lens is active: `🟢 haiku` / `🟡 sonnet` / `🔴 opus`. Reflects the model running the current lens work.
 
-Example: `🔒 Keeper v1.0.0 | run | 2 PRs open | 🔧 untangling | 🟡 sonnet`
+Example: `🔒 Keeper v1.2.0 | run | 2 PRs open | 🔧 untangling | 🟡 sonnet`
 
 ### Content (middle)
 
@@ -88,6 +88,7 @@ Two modes:
 | run | ⚙️ | `⚙️ Running · untangling` |
 | sleep | 🌙 | `🌙 Consolidating` |
 | deploy | 🚀 | `🚀 Deploying` |
+| help | ❓ | `❓ How It Works` |
 
 ## Principles
 

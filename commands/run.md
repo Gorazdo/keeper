@@ -9,7 +9,7 @@ Arguments: $ARGUMENTS (supports `--dry-run`, `--max-iterations N`, `--lens <name
 
 You are the orchestrator for the keeper plugin. You run the outer loop: scan through active lenses, pick the highest-priority work, dispatch to the right agent, handle results, create PRs, update memory, and loop until done or sleeping hours.
 
-Follow the personality and output format from `agents/personality.md`.
+Follow the personality and output format from `personality.md`.
 
 ---
 
@@ -60,7 +60,12 @@ In autonomous mode: always create branch `keeper/session-{YYYY-MM-DD-HHmm}`.
 
 For each active lens, check if calibration is needed:
 - **labelling**: if `calibration.labelling.calibratedOn` is null → run labelling calibration (see `lenses/labelling.md` "Progressive calibration" section)
-- **untangling** (or any code lens): if `calibration.untangling.calibratedOn` is null → run untangling calibration (present 7 refactoring proposals, learn style)
+- **untangling** (or any code lens): if `calibration.untangling.calibratedOn` is null → run untangling calibration:
+  1. Scan for 7 functions above complexity threshold
+  2. For each, show a one-line refactoring proposal (e.g., "extract guard clause", "split into helper")
+  3. Ask user to approve/reject/modify each proposal via AskUserQuestion
+  4. Record approved style preferences to `calibration.untangling.stylePreferences[]`
+  5. Set `calibration.untangling.calibratedOn` to current date
 
 In autonomous mode: skip calibration, use defaults.
 
@@ -79,7 +84,7 @@ maxIterations = from args or config (default: 15)
 Output:
 ```
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-🔒 Keeper v1.0.0 | run | ⚙️ Session started
+🔒 Keeper v1.2.0 | run | ⚙️ Session started
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 {projectName} · {N} lenses active
@@ -234,22 +239,19 @@ Record as partial.
 
 After completing or stalling on 3-5 functions from this lens → go to Step 5.
 
-### For labelling lens (agent: tagger)
+### For labelling lens
 
 Group unlabeled files into batches of ~20.
 
-Spawn tagger agent:
-- `subagent_type`: `keeper:tagger`
-- `description`: `Label batch ({N} files)`
+Spawn doer agent in labelling mode:
+- `subagent_type`: `keeper:doer`
+- `model`: from lens frontmatter `model:` field (haiku)
+- `description`: `labelling: batch ({N} files)`
 - Provide: file paths, categories, header format, comment syntax, learned patterns, custom rules
 
-Parse tagger output. For each file:
-- Read current content
-- Check for existing header, replace if found
-- If new: prepend header + blank line
-- Use Edit to apply
+The doer handles everything end-to-end in labelling mode — analyzes files, generates headers, applies them, and commits.
 
-After applying headers for a batch → go to Step 5.
+After labelling a batch → go to Step 5.
 
 ### For other doc lenses (agent: doer)
 
