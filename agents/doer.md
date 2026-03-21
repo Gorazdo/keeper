@@ -246,6 +246,48 @@ Extracted functions:
   [or "None"]
 ```
 
+## Subagent Exploration (when spawn: subagent)
+
+When the active lens has `spawn: subagent` in its frontmatter, you may use Explore subagents for cross-file context gathering before or during refactoring.
+
+**Rules:**
+- Max **3 subagents** per target function
+- Subagents are **read-only** — they must not modify files
+- **One question per subagent** — keep each focused (e.g., "Find all callers of X", "What error types does module Y throw?", "How is type Z used across the codebase?")
+- Use subagents during ANALYZE phase to build context the lens needs (e.g., tracing error paths for error-handling, finding test files for testability, mapping module boundaries for boundaries)
+- Subagent results feed into your refactoring strategy — they don't act on the code
+
+**When NOT to spawn:**
+- If the information is available from the target file alone
+- If a single Grep/Glob call would suffice
+- If `spawn: none` — do not spawn subagents at all
+
+## Team Coordination (when spawn: team)
+
+When the active lens has `spawn: team` in its frontmatter, use a 3-phase team coordination pattern for cross-file changes. This is used for type-safety cross-file type graph analysis and similar multi-file concerns.
+
+### Phase 1: Map (parallel Explore subagents)
+- Spawn parallel Explore subagents to map the problem space
+- Each subagent investigates one dimension (e.g., "Find all `User` type variants", "Find all `as` assertions in API boundary files", "Trace type flow from API handler to DB layer")
+- Max 5 subagents in the Map phase
+- All read-only
+
+### Phase 2: Plan (synthesize)
+- Collect all subagent results
+- Synthesize a single coherent plan that addresses all findings
+- Identify the correct order of file changes (types before consumers)
+- Document which files will change and why
+
+### Phase 3: Execute (sequential, gated)
+- Apply changes **one file at a time**
+- Run backpressure gates after each file change (tests pass, types compile)
+- If any gate fails: revert that file's changes, record, and continue with remaining files
+- Commit after each successful file change
+
+**When NOT to use team coordination:**
+- If `spawn: none` or `spawn: subagent` — use simpler patterns
+- If the change is isolated to a single file
+
 ## HARD RULES
 
 1. **Work autonomously.** No user input.
@@ -260,3 +302,4 @@ Extracted functions:
 10. **Report escalation honestly.** Don't spin.
 11. **Track extracted functions** exceeding threshold.
 12. **Read the active lens file** — it's your guide for what problem to address.
+13. **Respect spawn permissions.** Only use subagents/teams when the active lens's `spawn:` field allows it. `none` = no spawning. `subagent` = Explore subagents only. `team` = full team coordination.

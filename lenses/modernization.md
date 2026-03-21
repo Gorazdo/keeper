@@ -4,6 +4,8 @@ description: Paradigm-level shifts — imperative → declarative, callbacks →
 scope: function
 type: code
 agent: doer
+model: sonnet
+spawn: none
 ---
 
 > **Scanner vs Doer responsibility:** The scanner detects the *paradigm mismatch* — code written in an older style when the codebase has moved on. The doer decides the specific modern syntax based on the project's environment.

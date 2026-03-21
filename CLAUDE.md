@@ -36,7 +36,8 @@ keeper/
 │   ├── markdown.md                  # docs · file
 │   └── docs-coverage.md             # docs · module
 ├── skills/
-│   └── complexity-scorer/SKILL.md   # SonarQube algorithm fallback
+│   ├── complexity-scorer/SKILL.md   # SonarQube algorithm fallback
+│   └── housekeeping/SKILL.md        # Runtime file structure enforcement
 └── plan/                            # Implementation phases
 ```
 
@@ -45,8 +46,11 @@ keeper/
 ```
 {project}/
 ├── .keeperrc.json                   # Config (procedural memory)
-├── .keeper-memory.json              # Short-term memory
 └── _keeper/
+    ├── memory.json                  # Short-term memory
+    ├── output/
+    │   ├── supervised/              # Interactive session output
+    │   └── autonomous/              # Daemon/background output
     ├── encyclopedia/                # Long-term memory (articles)
     │   ├── architecture.md
     │   ├── patterns.md
@@ -54,23 +58,54 @@ keeper/
     │   ├── taxonomy.md
     │   └── conventions.md
     ├── history.md                   # Heritage, moments
-    └── briefing.md                  # Morning briefing
+    ├── briefing.md                  # Morning briefing
+    └── daemon.sh                    # Generated daemon script
 ```
 
 ## Memory Model
 
 - **Working memory** = conversation context (ephemeral)
-- **Short-term** = `.keeper-memory.json` (session results, pending consolidation)
+- **Short-term** = `_keeper/memory.json` (session results, pending consolidation, open PR tracking via `sessions.openPRs[]`)
 - **Long-term** = `_keeper/encyclopedia/` (proven patterns, promoted during sleep)
 - **Procedural** = `.keeperrc.json` (calibrated preferences, thresholds)
 
 ## Multi-Model Routing
 
-| Task | Model |
-|------|-------|
-| Scanning, labelling | haiku |
-| Code refactoring | sonnet |
-| Hard problems, escalation | opus |
+Each lens declares its own `model:` and `spawn:` in frontmatter. The orchestrator reads these at dispatch time.
+
+| Lens | Model | Spawn | Rationale |
+|------|-------|-------|-----------|
+| micro-hygiene | haiku | none | Simple single-file transforms |
+| jsdoc | haiku | none | Mechanical doc additions |
+| labelling | haiku | none | Classification, no reasoning |
+| untangling | sonnet | none | Structural reasoning |
+| modernization | sonnet | none | Paradigm-level reasoning |
+| testability | sonnet | subagent | Needs to explore test files, deps |
+| error-handling | sonnet | subagent | Must trace error paths across callers |
+| markdown | sonnet | none | Content quality judgment |
+| type-safety | sonnet | team | Cross-file type graph analysis |
+| boundaries | sonnet | subagent | Module boundary = multi-file |
+| friction | sonnet | subagent | Scattered concept detection |
+| docs-coverage | sonnet | subagent | Directory structure scanning |
+
+**Spawn modes:** `none` = no subagents. `subagent` = up to 3 read-only Explore subagents. `team` = Map/Plan/Execute multi-file coordination.
+
+**Escalation:** sonnet stalls → opus + stall context (unchanged).
+
+**Fallback:** Lenses without `model:` use agent default. Without `spawn:` → treat as `none`.
+
+## PR Lifecycle
+
+Keeper tracks PRs it creates and reconciles them before each scan cycle.
+
+1. **Create** — after each lens batch, `gh pr create` and record to `sessions.openPRs[]`
+2. **Reconcile** (Step 0.5 of run) — query `gh pr list --search "head:keeper/"`, classify each:
+   - **merged** → confirm in memory, move targets to completed
+   - **open** → add targets to in-flight skip list
+   - **closed (rejected)** → revert memory, targets will be re-scanned
+   - **conflicted** → flag for human attention
+3. **Backpressure** — if open PRs >= `pr.maxOpenPRs` (default 3), stop creating new work
+4. **Fallback** — if `gh` CLI unavailable, skip reconciliation with warning
 
 ## Key Patterns
 
@@ -80,3 +115,4 @@ keeper/
 - Sleep consolidation: triage → consolidate → prune → integrate → plan → brief
 - Backpressure gates: tests pass, coverage held, complexity down, signature unchanged
 - Escalation: sonnet stalls → opus + stall context
+- PR lifecycle: create → reconcile → backpressure gate

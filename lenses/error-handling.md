@@ -4,6 +4,8 @@ description: Swallowed errors, inconsistent error strategies, missing error path
 scope: function+module
 type: code
 agent: doer
+model: sonnet
+spawn: subagent
 ---
 
 > **Scanner vs Doer responsibility:** The scanner flags *where* error handling is absent, silent, or inconsistent. The doer decides the appropriate strategy (throw, Result type, error boundary, etc.) based on the codebase's conventions.

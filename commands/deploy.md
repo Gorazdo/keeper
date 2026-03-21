@@ -55,7 +55,7 @@ If not found, warn but continue (user may have it elsewhere).
 
 ### 0c. Check for existing script
 
-If `keeper-daemon.sh` exists and `--regenerate` was NOT passed:
+If `_keeper/daemon.sh` exists and `--regenerate` was NOT passed:
 
 Use AskUserQuestion:
 - "Daemon script already exists. What would you like to do?"
@@ -113,7 +113,7 @@ Detect keeper plugin location. Use AskUserQuestion:
 
 ## Step 2: Generate Script
 
-Write `keeper-daemon.sh` to project root.
+Write `_keeper/daemon.sh`.
 
 ### Script template
 
@@ -128,10 +128,10 @@ Write `keeper-daemon.sh` to project root.
 # Cadence: every {N}h
 #
 # Usage:
-#   ./keeper-daemon.sh start    Start daemon in tmux
-#   ./keeper-daemon.sh stop     Stop daemon
-#   ./keeper-daemon.sh status   Check if running
-#   ./keeper-daemon.sh logs     Tail daemon output
+#   ./_keeper/daemon.sh start    Start daemon in tmux
+#   ./_keeper/daemon.sh stop     Stop daemon
+#   ./_keeper/daemon.sh status   Check if running
+#   ./_keeper/daemon.sh logs     Tail daemon output
 #
 # ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
@@ -243,13 +243,13 @@ esac
 ### Write the script
 
 ```bash
-# Write to project root
-chmod +x keeper-daemon.sh
+# Write and make executable
+chmod +x _keeper/daemon.sh
 ```
 
 ### Update .gitignore
 
-Check if `keeper-daemon.sh` is in `.gitignore`. If not, offer to add it (it contains absolute paths).
+If `_keeper/` is already in `.gitignore`, the daemon script is covered. If not, offer to add `_keeper/` (the script contains absolute paths and shouldn't be committed).
 
 ---
 
@@ -260,7 +260,7 @@ Check if `keeper-daemon.sh` is in `.gitignore`. If not, offer to add it (it cont
 🔒 Keeper | deploy | 🚀 Daemon Ready
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-Generated: keeper-daemon.sh
+Generated: _keeper/daemon.sh
 
 Configuration:
   Lenses:  {list}
@@ -268,10 +268,10 @@ Configuration:
   Cadence: every {N}h
 
 Quick start:
-  ./keeper-daemon.sh start    Launch daemon
-  ./keeper-daemon.sh status   Check status
-  ./keeper-daemon.sh stop     Stop daemon
-  ./keeper-daemon.sh logs     Watch output
+  ./_keeper/daemon.sh start    Launch daemon
+  ./_keeper/daemon.sh status   Check status
+  ./_keeper/daemon.sh stop     Stop daemon
+  ./_keeper/daemon.sh logs     Watch output
 
 The daemon runs keeper in a tmux session.
 Each cycle: scan → pick lens → work → PR.
@@ -295,7 +295,7 @@ Save deploy settings to `.keeperrc.json`:
   "deploy": {
     "cadenceHours": {N},
     "generatedAt": "{ISO timestamp}",
-    "scriptPath": "keeper-daemon.sh"
+    "scriptPath": "_keeper/daemon.sh"
   }
 }
 ```

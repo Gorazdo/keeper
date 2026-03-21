@@ -29,7 +29,7 @@ STOP.
 
 ### 0b. Load memory
 
-Read `.keeper-memory.json`. Create empty if missing.
+Read `_keeper/memory.json`. Create empty if missing.
 
 Load `_keeper/briefing.md` if it exists — use planned targets as initial priority hints.
 
@@ -92,12 +92,61 @@ Branch: {branch}
 
 ---
 
+## Step 0.5: PR Reconciliation
+
+Before scanning, check the state of any open keeper PRs to avoid duplicate work and enforce backpressure.
+
+### 0.5a. Query open PRs
+
+```bash
+gh pr list --search "head:keeper/" --json number,title,headRefName,state,mergeable,createdAt
+```
+
+**Graceful fallback:** If `gh` is unavailable or the command fails, skip the entire Step 0.5 with a warning:
+```
+⚠️ gh CLI unavailable — skipping PR reconciliation
+```
+
+### 0.5b. Classify each PR
+
+For each PR returned:
+
+| State | Action |
+|-------|--------|
+| **merged** | Confirm in memory — move targets from `sessions.openPRs[]` to `refactoring.completedFunctions[]`. Remove PR entry. |
+| **open, mergeable** | Add to skip list — these targets are pending review. Keep PR entry as-is. |
+| **closed (not merged)** | Revert in memory — remove targets from `completedFunctions[]`, remove PR entry. These will be re-scanned. |
+| **open, conflicted** | Flag for human attention. In supervised mode: notify user. In autonomous mode: log warning. |
+
+### 0.5c. Backpressure gate
+
+Count open (non-merged, non-closed) keeper PRs. Compare against `pr.maxOpenPRs` (default: 3).
+
+If open PRs >= threshold:
+- **Supervised mode:** Ask user: `"⛔ {N}/{max} keeper PRs open. Wait for reviews or continue anyway?"`
+  - **Wait** — STOP, output status and exit
+  - **Continue** — proceed (user takes responsibility)
+- **Autonomous mode:** STOP. Output:
+```
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+🔒 Keeper | run | ⛔ {N}/{max} PRs open — paused
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+Waiting for PR reviews before creating more work.
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+```
+
+### 0.5d. Build in-flight skip list
+
+Collect all target functions/files from open PRs in `sessions.openPRs[]`. Pass this list to the scanner as "in-flight functions" to skip.
+
+---
+
 ## Step 1: SCAN
 
 Spawn the scanner agent:
 - `subagent_type`: `keeper:scanner`
 - `description`: `Scan codebase (iteration {N})`
-- Provide: source/exclude globs, threshold, active lenses, scan mode (`full` or filtered by `--lens`), completed functions, tagged files, human review list
+- Provide: source/exclude globs, threshold, active lenses, scan mode (`full` or filtered by `--lens`), completed functions, tagged files, human review list, **in-flight skip list** (from Step 0.5d)
 
 Wait for results. Parse structured output.
 
@@ -131,18 +180,24 @@ In supervised mode: Use AskUserQuestion:
 
 In autonomous mode: auto-select top priority lens.
 
-Output:
+Output (include model indicator from lens frontmatter and PR count if applicable):
 ```
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-🔒 Keeper | run | ⚙️ {lens} · iteration {N}/{max}
+🔒 Keeper | run | {N} PRs open | 🔧 {lens} | {model indicator}
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 ```
+
+Model indicators: `🟢 haiku` / `🟡 sonnet` / `🔴 opus` — read from the active lens's `model:` frontmatter field.
 
 ---
 
 ## Step 4: WORK
 
 Dispatch to the lens's agent for a batch of targets (3-5 from the same lens).
+
+Read the active lens's frontmatter for `model:` and `spawn:` fields:
+- **model** — if it differs from the agent's default, pass as `model` override when spawning the agent
+- **spawn** — include in the doer prompt so it knows its spawning permissions (`none`, `subagent`, or `team`)
 
 ### For code lenses (agent: doer)
 
@@ -151,6 +206,7 @@ For each target function, ONE AT A TIME:
 Build the doer prompt with full context:
 - Target function (name, file, lines, complexity, problem types)
 - **Active lens name** — which lens flagged this function
+- **Spawn permission** — from the lens's `spawn:` field (none, subagent, or team)
 - Thresholds, test config
 - Style preferences from memory
 - Relevant techniques (worked/failed) from memory
@@ -159,6 +215,7 @@ Build the doer prompt with full context:
 
 Spawn doer agent:
 - `subagent_type`: `keeper:doer`
+- `model`: from lens frontmatter `model:` field (override if different from agent default)
 - `description`: `{lens}: {functionName}`
 
 Process doer result:
@@ -250,7 +307,12 @@ PREOF
 )"
 ```
 
-After PR creation, switch back to main branch for next cycle:
+After PR creation, record to `_keeper/memory.json` `sessions.openPRs[]`:
+```json
+{ "number": N, "lens": "...", "branch": "keeper/...", "targets": ["functionName@file:line", ...], "status": "pending", "createdAt": "YYYY-MM-DDTHH:mm:ssZ" }
+```
+
+Then switch back to main branch for next cycle:
 ```bash
 git checkout {original branch}
 ```
@@ -259,7 +321,7 @@ git checkout {original branch}
 
 ## Step 6: REMEMBER
 
-Update `.keeper-memory.json`:
+Update `_keeper/memory.json`:
 
 ### 6a. Record results
 
@@ -317,6 +379,8 @@ No more targets across {N} active lenses.
 {✅|⚠️|🛑|⏱️} {target} — {lens} — {before}→{after}
 
 PRs created: {N}
+PRs open: {N} (of {max} allowed)
+PRs merged since last run: {N}
 Commits: {total}
 Lenses worked: {list}
 
@@ -326,7 +390,7 @@ Lenses worked: {list}
 {If promotion candidates:}
 🔄 {N} extracted helper(s) — candidates for shared utility
 
-Memory updated: .keeper-memory.json
+Memory updated: _keeper/memory.json
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 ```
 
@@ -344,3 +408,5 @@ Memory updated: .keeper-memory.json
 8. **Show progress.** Output iteration headers and results.
 9. **Respect schedule.** If sleeping hours → consolidate and pause.
 10. **3-5 targets per lens batch.** Small PRs. Midnight snacks.
+11. **Reconcile PRs before scanning.** Always run Step 0.5 before Step 1. Never create duplicate work for targets with open PRs.
+12. **Respect PR backpressure.** If open PRs >= `pr.maxOpenPRs`, stop creating new work. Don't circumvent the gate.

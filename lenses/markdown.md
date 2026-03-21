@@ -4,6 +4,8 @@ description: Markdown file structure and content quality — missing sections, b
 scope: file
 type: docs
 agent: doer
+model: sonnet
+spawn: none
 ---
 
 > **Scanner vs Doer responsibility:** The scanner identifies *which* markdown files have structural or content issues. The doer fixes the content.

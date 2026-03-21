@@ -4,6 +4,8 @@ description: Structural friction — scattered concepts, test deserts, navigatio
 scope: module
 type: code
 agent: doer
+model: sonnet
+spawn: subagent
 ---
 
 ## What this lens detects

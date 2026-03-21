@@ -4,6 +4,8 @@ description: Why is this function hard to test — untested, no seams, logic tan
 scope: function
 type: code
 agent: doer
+model: sonnet
+spawn: subagent
 ---
 
 > **Scanner vs Doer responsibility:** The scanner identifies *why* a function is hard to test. The doer decides *how* to introduce seams or separate concerns.

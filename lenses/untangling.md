@@ -4,6 +4,8 @@ description: Control flow complexity — deep nesting, tangled branching, boolea
 scope: function
 type: code
 agent: doer
+model: sonnet
+spawn: none
 ---
 
 ## What this lens detects

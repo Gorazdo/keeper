@@ -4,6 +4,8 @@ description: Build-time type quality — type holes, unvalidated boundaries, opa
 scope: function+module
 type: code
 agent: doer
+model: sonnet
+spawn: team
 ---
 
 > **Unique lens:** This lens does not touch runtime code. It analyzes the **type graph** — how type information flows through the codebase, where it breaks, and where annotations lie about what's actually there. Because types are scattered across files, this lens is allowed to follow imports, read type definition files, and trace type chains more than other lenses.

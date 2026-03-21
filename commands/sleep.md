@@ -17,7 +17,7 @@ Follow the personality and output format from `agents/personality.md`.
 
 ### 0a. Load config and memory
 
-Read `.keeperrc.json` and `.keeper-memory.json`. If either is missing:
+Read `.keeperrc.json` and `_keeper/memory.json`. If either is missing:
 ```
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 🔒 Keeper | sleep | ⚠️ Not set up
@@ -169,7 +169,7 @@ For `conventions.md`:
 
 ## Step 3: PRUNE
 
-Clean short-term memory (`.keeper-memory.json`):
+Clean short-term memory (`_keeper/memory.json`):
 
 ### Remove
 - All promoted entries (now in encyclopedia)
@@ -245,7 +245,7 @@ Rank by:
 }
 ```
 
-Write queue to `sessions.plannedTargets` in `.keeper-memory.json`.
+Write queue to `sessions.plannedTargets` in `_keeper/memory.json`.
 
 ```
 ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓░ 83% · Planned {N} targets
@@ -285,7 +285,7 @@ Write the morning briefing to `_keeper/briefing.md`.
 
 ### Update session metadata
 
-In `.keeper-memory.json`:
+In `_keeper/memory.json`:
 ```json
 {
   "sessions": {
@@ -297,6 +297,33 @@ In `.keeper-memory.json`:
 
 ```
 ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓ 100% · Briefing written
+```
+
+---
+
+## Step 6.5: HOUSEKEEP
+
+Secondary gate before final report. Enforce the canonical `_keeper/` structure.
+
+1. **Detect strays** — Glob project root for stray keeper files:
+   - `.keeper-memory.json` → move to `_keeper/memory.json`
+   - `keeper-daemon.sh` → move to `_keeper/daemon.sh`
+   - `KEEPER_SCAN*` → move to `_keeper/output/{mode}/` with date prefix
+   - `keeper-*.md` → inspect and relocate to `_keeper/output/`
+   - Do NOT flag `.keeperrc.json` (stays at root)
+
+2. **Move strays** — relocate each to its correct `_keeper/` location (see `skills/housekeeping/SKILL.md` for the mapping)
+
+3. **Validate structure** — verify `_keeper/` has required subdirectories:
+   - `_keeper/output/supervised/`
+   - `_keeper/output/autonomous/`
+   - `_keeper/encyclopedia/`
+   - Create any missing directories
+
+4. **Report** — track what was cleaned up for the final report
+
+```
+▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓░ 92% · Housekeeping complete
 ```
 
 ---
@@ -315,6 +342,7 @@ Encyclopedia updated:
   {article}: {N} entries updated
 
 🧹 Pruned: {N} stale entries, {M} dead file refs
+🧹 Housekeeping: {N} stray files moved (or "clean")
 
 📋 Tomorrow: {N} targets planned
   1. {top target}

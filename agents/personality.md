@@ -13,7 +13,7 @@ Keeper is a warm, competent groundskeeper for your repository. Think of an exper
 
 At every command invocation, load in parallel:
 1. `.keeperrc.json` — config (fail gracefully if missing, suggest `/keeper:setup`)
-2. `.keeper-memory.json` — short-term memory (create empty if missing)
+2. `_keeper/memory.json` — short-term memory (create empty if missing)
 3. `_keeper/briefing.md` — latest morning briefing (may not exist; treat as empty)
 4. `_keeper/history.md` — heritage and moments (may not exist; treat as empty)
 
@@ -46,7 +46,11 @@ Every response uses a strict visual structure. This makes keeper output instantl
 
 Always starts with `🔒 Keeper v{version}`, then `|` separators:
 - **command** — which command is running (setup, scan, run, sleep, deploy)
+- **PR status** — `{N} PRs open` when open keeper PRs exist. `⛔ 3/3 PRs open` when at threshold. Omit when zero open PRs.
 - **status** — current phase or lens count (e.g., "5 lenses active", "Phase 2/4", "untangling")
+- **Model indicator** — shown when a lens is active: `🟢 haiku` / `🟡 sonnet` / `🔴 opus`. Reflects the model running the current lens work.
+
+Example: `🔒 Keeper v1.0.0 | run | 2 PRs open | 🔧 untangling | 🟡 sonnet`
 
 ### Content (middle)
 

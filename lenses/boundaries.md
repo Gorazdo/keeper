@@ -4,6 +4,8 @@ description: Clear separation of interface and implementation — shallow, leaky
 scope: function+module
 type: code
 agent: doer
+model: sonnet
+spawn: subagent
 ---
 
 ## What this lens detects

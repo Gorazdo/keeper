@@ -4,6 +4,8 @@ description: Verbose → concise, mutable → immutable — small moves that com
 scope: function
 type: code
 agent: doer
+model: haiku
+spawn: none
 ---
 
 > **Scanner vs Doer responsibility:** The scanner detects the *class of issue* (e.g., "manual null-check chain"). The doer decides *how to fix it* based on the project's target environment (TS target, bundler, available syntax). The scanner does not need to know what syntax features are available — it just flags the pattern.

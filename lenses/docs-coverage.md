@@ -4,6 +4,8 @@ description: Documentation gaps and drift — missing AGENTS.md, oversized inter
 scope: module
 type: docs
 agent: doer
+model: sonnet
+spawn: subagent
 ---
 
 > **Scanner vs Doer responsibility:** The scanner identifies *which* directories/files have documentation coverage issues. The doer creates, updates, or prunes the documentation.

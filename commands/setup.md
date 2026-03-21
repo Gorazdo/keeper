@@ -1,5 +1,5 @@
 ---
-description: Bootstrap keeper in your project — detect stack, choose lenses, create config and memory files.
+description: Bootstrap keeper in your project — detect stack, create config and memory files.
 allowed-tools: Read, Write, Glob, Grep, Bash(git *, ls *, wc *, cat package.json, cat *.json, cat *.toml, cat *.yaml), AskUserQuestion
 ---
 
@@ -26,7 +26,7 @@ Follow the personality and output format from `agents/personality.md`. Every res
 Output the Keeper Block header:
 ```
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-🔒 Keeper v1.0.0 | setup | Phase 1/4
+🔒 Keeper v1.0.0 | setup | Phase 1/3
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 ▓░░░░░░░░░░░░░░░░░░░░░░░░ 10% · Detecting project...
 ```
@@ -37,11 +37,8 @@ Read `.keeperrc.json` at project root. If it exists:
 - Load and display current config summary
 - Use AskUserQuestion: "Keeper is already set up. What would you like to do?"
   - **Reconfigure** — "Re-detect project and update config"
-  - **Add lenses** — "Keep current config, add more lenses"
   - **Reset** — "Start fresh — new config and memory"
   - (User can also pick Other)
-
-If "Add lenses", jump to Phase 2 (lens selection). If "Reset", continue as if no config exists.
 
 ### 1b. Check for legacy configs (migration)
 
@@ -93,32 +90,14 @@ Show a brief summary of what was detected.
 
 ---
 
-## Phase 2: Choose Lenses (~30%)
+## Phase 2: Create Config (~50%)
 
 Update progress:
 ```
-▓▓▓▓▓▓▓░░░░░░░░░░░░░░░░░ 30% · Choosing lenses...
+▓▓▓▓▓▓▓▓▓▓▓▓░░░░░░░░░░░░ 50% · Writing config...
 ```
 
-Read all `.md` files in the `lenses/` directory of this plugin. Extract `name`, `description`, `type`, and `scope` from each file's frontmatter.
-
-Use **AskUserQuestion** with `multiSelect: true`:
-- Question: "Which lenses should keeper use? Each lens detects a different dimension of code/docs quality."
-- Group options by type (code lenses first, then docs lenses)
-- Options: one per lens, `name` as label, `description` as option description
-- **Untangling** listed first as "(Recommended)" for code
-- **Labelling** listed first as "(Recommended)" for docs
-
-If the user selects zero lenses, default to `["untangling", "labelling"]` and inform them.
-
----
-
-## Phase 3: Create Config (~60%)
-
-Update progress:
-```
-▓▓▓▓▓▓▓▓▓▓▓▓▓▓░░░░░░░░░░ 60% · Writing config...
-```
+All 12 lenses are activated by default. Lens filtering happens at run time (`--lens` flag) and deploy time (daemon schedule). Setup does not ask which lenses to use.
 
 Write `.keeperrc.json`:
 ```json
@@ -135,7 +114,7 @@ Write `.keeperrc.json`:
       "hard": "opus"
     }
   },
-  "activeLenses": ["{selected lenses}"],
+  "activeLenses": ["untangling", "modernization", "testability", "boundaries", "micro-hygiene", "type-safety", "friction", "error-handling", "labelling", "jsdoc", "markdown", "docs-coverage"],
   "tags": {
     "headerFormat": "jsdoc",
     "categories": []
@@ -156,12 +135,13 @@ Write `.keeperrc.json`:
   },
   "pr": {
     "maxFunctionsPerPr": 5,
+    "maxOpenPRs": 3,
     "branchPrefix": "keeper"
   }
 }
 ```
 
-Write `.keeper-memory.json`:
+Write `_keeper/memory.json`:
 ```json
 {
   "version": "1.0",
@@ -184,13 +164,14 @@ Write `.keeper-memory.json`:
   "sessions": {
     "lastRun": null,
     "lastSleep": null,
-    "pendingConsolidation": []
+    "pendingConsolidation": [],
+    "openPRs": []
   },
   "summary": ""
 }
 ```
 
-Create `_keeper/` directory with:
+Create `_keeper/` directory with `_keeper/output/supervised/` and `_keeper/output/autonomous/` subdirectories, plus:
 
 `_keeper/encyclopedia/architecture.md`:
 ```markdown
@@ -222,25 +203,25 @@ No briefing yet. Run `/keeper:run` to start working, then `/keeper:sleep` to con
 
 ---
 
-## Phase 4: Finalize (~90%)
+## Phase 3: Finalize (~90%)
 
 Update progress:
 ```
 ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓░░░ 90% · Finalizing...
 ```
 
-### 4a. Gitignore
+### 3a. Gitignore
 
 Use AskUserQuestion:
 - Question: "Add keeper files to .gitignore?"
 - Options:
-  - **Config only** — "Commit config, gitignore memory and encyclopedia (personal learnings)"
-  - **All keeper files** — "Gitignore .keeperrc.json, .keeper-memory.json, and _keeper/"
+  - **Config only** — "Commit .keeperrc.json, gitignore _keeper/ (personal learnings)"
+  - **All keeper files** — "Gitignore .keeperrc.json and _keeper/"
   - **Commit everything** — "Track all keeper files in git (shared with team)"
 
 Apply choice to `.gitignore` (create if needed, append if exists).
 
-### 4b. Done
+### 3b. Done
 
 Update progress to 100%.
 
@@ -251,12 +232,14 @@ Output the final Keeper Block:
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 {projectName} · {language}/{framework}
-{N} lenses active: {lens names}
+12 lenses active (all)
 Test runner: {runner}
 
 Files created:
   .keeperrc.json
-  .keeper-memory.json
+  _keeper/memory.json
+  _keeper/output/supervised/
+  _keeper/output/autonomous/
   _keeper/encyclopedia/ (5 articles)
   _keeper/history.md
   _keeper/briefing.md

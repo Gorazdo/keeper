@@ -4,6 +4,8 @@ description: JSDoc comment quality — missing, incomplete, or inaccurate JSDoc 
 scope: function
 type: docs
 agent: doer
+model: haiku
+spawn: none
 ---
 
 > **Scanner vs Doer responsibility:** The scanner identifies *which* exported functions have missing or poor JSDoc. The doer writes or improves the JSDoc comments.

@@ -44,7 +44,8 @@ For each file:
 3. **Write one-line purpose:** What this file does, factual, under 80 chars.
 4. **Extract internal dependencies:** Scan imports for project-internal paths (not packages). Up to 5, relative paths.
 5. **Identify dependents (optional):** Only if batch ≤10 files. Grep for files that import this one.
-6. **Assess confidence:** high, medium, low
+6. **Flag issues (if detectable):** Note obvious errors (uncaught promises, missing error handling, unused exports) and warnings (missing validation, deprecated API usage). Only flag what's visible from reading the file — don't run analysis tools.
+7. **Assess confidence:** high, medium, low
 
 ### Step 3: Generate Headers
 
@@ -52,29 +53,33 @@ For each file:
 ```
 /**
  * @dossier
+ * @errors [comma-separated issues, or omit line if none]
  * @category [Category]
  * @purpose [one-line purpose]
  * @dependencies [comma-separated paths]
  * @dependents [comma-separated or "unknown"]
+ * @warnings [comma-separated warnings, or omit line if none]
  */
 ```
 
-**ASCII box format:**
+**Tetris-well format:**
 Using file's comment prefix (`//` for TS, `#` for Python):
+
 ```
-[prefix] ╔═══════...═══════════╗
-[prefix] ║ CATEGORY · FileName  ║
-[prefix] ║ Purpose description   ║
-[prefix] ║ deps: ./a, ./b        ║
-[prefix] ╚═══════...═══════════╝
+[prefix] ❌ [error description]
+[prefix] ╔════════════════════════════════════════
+[prefix] ║ [Category] [FileName]
+[prefix] ║ Purpose description
+[prefix] ╚════════════════════════════════════════
+[prefix] ⚠️ [warning description]
 ```
 
-Box rules:
-- Width = longest content line + 4, capped at 76 chars (+ prefix)
-- Pad shorter lines with spaces to fill box
-- Category is UPPERCASE
-- File name is basename without extension
-- Wrap long content inside box
+Well rules:
+- Top/bottom borders: `═` repeated to ~50 chars, NO right closure
+- Category in brackets, PascalCase: `[Service]`, `[Hook]`, `[Route]`
+- File name is basename without extension in brackets: `[UrlService]`
+- No I/O in the well — all dependency info stays in @dossier only
+- ❌ errors above well, ⚠️ warnings below well — omit rows if none
 - Correct comment prefix per file type
 
 ### Step 4: Output Results
@@ -98,6 +103,8 @@ CATEGORY: [Category]
 PURPOSE: [one-line purpose]
 DEPS: [comma-separated internal deps]
 DEPENDENTS: [comma-separated or "unknown"]
+ERRORS: [comma-separated issues or "None"]
+WARNINGS: [comma-separated warnings or "None"]
 CONFIDENCE: [high/medium/low]
 HEADER:
 [full header block — multiple lines, ready to prepend]

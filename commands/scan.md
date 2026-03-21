@@ -33,7 +33,7 @@ Run /keeper:setup first to bootstrap config.
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 ```
 
-Load `.keeper-memory.json` (create empty if missing).
+Load `_keeper/memory.json` (create empty if missing).
 
 ---
 
@@ -121,6 +121,26 @@ No issues found across {N} active lenses.
 ↘️ [X] Done
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 ```
+
+---
+
+## Step 3: Write Output
+
+After displaying results, persist scan output to `_keeper/output/`.
+
+### Determine mode
+- If running interactively (Claude Code, user present) → `supervised`
+- If running via daemon/tmux/background → `autonomous`
+
+### Date prefix
+Use today's date: `YYYY-MM-DD`
+
+### Write files to `_keeper/output/{mode}/`:
+- `{date}-scan-detailed.md` — full scanner output (all findings detail)
+- `{date}-scan-summary.md` — the Keeper Block summary shown to user
+- `{date}-scan-results.txt` — plain text findings (structured scanner output)
+
+If the output directory doesn't exist, create it.
 
 ---
 
