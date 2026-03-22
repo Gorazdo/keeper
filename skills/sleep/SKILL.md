@@ -32,10 +32,10 @@ STOP.
 ### 0b. Create lock file
 
 ```bash
-touch _keeper/.lock
+date -u "+%Y-%m-%dT%H:%M:%SZ" > _keeper/.lock
 ```
 
-Clean up stale locks if present.
+The timestamp lets hooks detect stale locks (>60 min) from crashed sessions.
 
 ### 0c. Check pending work
 
@@ -58,7 +58,7 @@ Skip to Step 6.5 (Housekeep) — still run housekeeping even with nothing to con
 Output:
 ```
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-🔒 Keeper v1.3.1 | sleep | 🌙 Consolidating
+🔒 Keeper v{version} | sleep | 🌙 Consolidating
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 {N} pending entries to process.

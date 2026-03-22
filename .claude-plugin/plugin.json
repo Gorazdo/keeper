@@ -7,45 +7,6 @@
   },
   "license": "MIT",
   "repository": "https://github.com/gorazdo/keeper",
-  "skills": [
-    {
-      "name": "setup",
-      "file": "skills/setup/SKILL.md"
-    },
-    {
-      "name": "scan",
-      "file": "skills/scan/SKILL.md"
-    },
-    {
-      "name": "run",
-      "file": "skills/run/SKILL.md"
-    },
-    {
-      "name": "sleep",
-      "file": "skills/sleep/SKILL.md"
-    },
-    {
-      "name": "deploy",
-      "file": "skills/deploy/SKILL.md"
-    },
-    {
-      "name": "help",
-      "file": "skills/help/SKILL.md"
-    },
-    {
-      "name": "complexity-scorer",
-      "file": "skills/complexity-scorer/SKILL.md"
-    }
-  ],
-  "agents": [
-    {
-      "name": "scanner",
-      "file": "agents/scanner.md"
-    },
-    {
-      "name": "doer",
-      "file": "agents/doer.md"
-    }
-  ],
+  "skills": "./skills",
   "hooks": "./hooks/hooks.json"
 }

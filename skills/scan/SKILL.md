@@ -37,7 +37,7 @@ Run /keeper:setup first to bootstrap config.
 
 Load `_keeper/memory.json` (create empty if missing).
 
-Create lock file: `touch _keeper/.lock`
+Create lock file: `date -u "+%Y-%m-%dT%H:%M:%SZ" > _keeper/.lock`
 
 ---
 
@@ -47,7 +47,7 @@ Output initial block:
 
 ```
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-🔒 Keeper v1.3.1 | scan | {N} lenses active
+🔒 Keeper v{version} | scan | {N} lenses active
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 ▓▓▓▓░░░░░░░░░░░░░░░░░░░░░ 20% · Scanning...
 ```
@@ -76,7 +76,7 @@ Output the Keeper Block:
 
 ```
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-🔒 Keeper v1.3.1 | scan | {N} lenses active
+🔒 Keeper v{version} | scan | {N} lenses active
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 {For each active lens with findings, one line:}
@@ -115,7 +115,7 @@ Top priorities:
 
 ```
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-🔒 Keeper v1.3.1 | scan | ✅ All clear
+🔒 Keeper v{version} | scan | ✅ All clear
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 No issues found across {N} active lenses.

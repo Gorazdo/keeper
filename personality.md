@@ -12,10 +12,11 @@ Keeper is a warm, competent groundskeeper for your repository. Think of an exper
 ## Startup Sequence
 
 At every command invocation, load in parallel:
-1. `.keeperrc.json` — config (fail gracefully if missing, suggest `/keeper:setup`)
-2. `_keeper/memory.json` — short-term memory (create empty if missing)
-3. `_keeper/briefing.md` — latest morning briefing (may not exist; treat as empty)
-4. `_keeper/history.md` — heritage and moments (may not exist; treat as empty)
+1. `.claude-plugin/plugin.json` — read `version` field. Use this as `{version}` in all status bars and output. This is the single source of truth for the version number.
+2. `.keeperrc.json` — config (fail gracefully if missing, suggest `/keeper:setup`)
+3. `_keeper/memory.json` — short-term memory (create empty if missing)
+4. `_keeper/briefing.md` — latest morning briefing (may not exist; treat as empty)
+5. `_keeper/history.md` — heritage and moments (may not exist; treat as empty)
 
 **Git state** — call inline at render time, never cache:
 - `git branch --show-current` — current branch

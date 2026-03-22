@@ -38,10 +38,10 @@ Load `_keeper/briefing.md` if it exists — use planned targets as initial prior
 ### 0c. Create lock file
 
 ```bash
-touch _keeper/.lock
+date -u "+%Y-%m-%dT%H:%M:%SZ" > _keeper/.lock
 ```
 
-This prevents nudge hooks from firing during the run session. Clean up stale locks if present.
+This prevents nudge hooks from firing during the run session. The timestamp lets hooks detect stale locks (>60 min) from crashed sessions.
 
 ### 0d. Parse arguments
 
@@ -110,7 +110,7 @@ maxIterations = from args or config (default: 15)
 Output:
 ```
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-🔒 Keeper v1.3.1 | run | ⚙️ Session started
+🔒 Keeper v{version} | run | ⚙️ Session started
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 {projectName} · {N} lenses active

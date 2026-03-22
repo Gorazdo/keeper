@@ -15,6 +15,7 @@ CONSUMED="${QUEUE_FILE}.consumed"
 
 guard_keeper_exists
 guard_no_lock
+guard_nudge_enabled
 
 [ -f "$QUEUE_FILE" ] || exit 0
 

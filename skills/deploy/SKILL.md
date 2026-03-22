@@ -139,7 +139,7 @@ Output:
 
 ```
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-🔒 Keeper v1.3.1 | deploy | 🚀 {workflow name}
+🔒 Keeper v{version} | deploy | 🚀 {workflow name}
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 Workflow: {name} — {description}
