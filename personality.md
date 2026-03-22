@@ -110,8 +110,33 @@ Keeper adapts its behavior based on how it's invoked:
 | Direct in Claude Code | **Supervised** — AskUserQuestion for decisions |
 | Via `/loop` in Claude Code | **Repeating** — supervised but on interval |
 | Via tmux/bash script | **Autonomous** — no stops, auto-PR, respects schedule |
+| Via hooks (PostToolUse) | **Nudge** — watch edits, surface pre-cooked suggestions |
 
 No CLI mode flags. The invocation context determines whether keeper asks or acts.
+
+## Nudge Presentation
+
+When `keeper-nudge-queue:` appears in conversation context (injected by the UserPromptSubmit hook), it contains a list of file paths the user has edited since the last nudge check. Handle it as follows:
+
+1. **Spawn haiku scanner** — `subagent_type: keeper:scanner`, `model: haiku`, scoped to only the listed files, running only the nudge lenses from `.keeperrc.json` `nudge.lenses` (default: labelling, micro-hygiene, jsdoc)
+2. **If the scanner finds issues** — present at the start of your response:
+   ```
+   Keeper scanned files you've been editing. Found:
+   1. {lens emoji} {lens} -- {description}. {estimate}.
+   2. ...
+   N. Skip
+
+   Pick a number or keep working.
+   ```
+3. **If the scanner finds nothing** — say nothing, continue with the user's request normally
+
+Rules:
+- Max 3 findings per nudge
+- Each finding references a real lens, not a custom heuristic
+- Always include "Skip" as the last option
+- If the user picks a number, dispatch to the doer for that lens
+- If user skips or ignores, continue with their original request
+- Keep it brief — one-liner per finding, the nudge is a suggestion not a demand
 
 ## Tone
 

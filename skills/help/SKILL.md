@@ -1,13 +1,15 @@
 ---
-description: Brief visual overview of how keeper works, plus interactive Q&A.
-allowed-tools: Read, Glob, Grep, AskUserQuestion
+name: help
+description: Brief visual overview of how keeper works, plus interactive Q&A. Use this skill when the user asks how keeper works, what keeper does, what lenses are, how to use keeper, or any question about keeper's features, modes, commands, memory model, or architecture. Also triggers on "explain keeper", "what is keeper", or "help with keeper".
+user-invokable: true
+disable-model-invocation: false
 ---
 
 # Keeper Help
 
 Arguments: $ARGUMENTS
 
-You explain how keeper works — briefly, visually, then answer questions. This is a read-only command. No file modifications, no agent spawning.
+You explain how keeper works — briefly, visually, then answer questions. This is a read-only skill. No file modifications, no agent spawning.
 
 Follow the personality and output format from `personality.md`.
 
@@ -19,7 +21,7 @@ Output the Keeper Block:
 
 ```
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-🔒 Keeper v1.2.0 | help | ❓ How It Works
+🔒 Keeper v1.3.0 | help | ❓ How It Works
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
         scan ──→ prioritize ──→ work ──→ PR
@@ -39,7 +41,7 @@ Output the Keeper Block:
 🚀 deploy   Generate daemon scripts
 ❓ help     You are here
 
-📡 Supervised · Repeating · Autonomous
+📡 Supervised · Daemon · Nudge
 
 12 lenses · 2 agents · 4 memory layers
 
@@ -68,7 +70,7 @@ Use AskUserQuestion:
 - Options:
   - **Lenses** — "The 12 analysis dimensions (8 code, 4 docs)"
   - **Memory** — "4 memory layers — working, short-term, long-term, procedural"
-  - **Modes** — "Supervised, repeating, and autonomous invocation"
+  - **Modes** — "Supervised, daemon, and nudge modes"
   - (user can also type any question)
 
 ### Answering
@@ -80,9 +82,10 @@ For each question:
    - Memory → read `personality.md` (memory model section) and `CLAUDE.md`
    - Modes → read `personality.md` (invocation context section)
    - Agents → read `agents/scanner.md` and `agents/doer.md` descriptions
-   - PRs → read `commands/run.md` Step 5 and Step 0.5
-   - Commands → read the relevant `commands/*.md` description line
+   - PRs → read `skills/run/SKILL.md` Step 5 and Step 0.5
+   - Skills → read the relevant `skills/*/SKILL.md` description line
    - Config → read `.keeperrc.json` if it exists
+   - Nudge → explain the two-hook pipeline (PostToolUse → triage → UserPromptSubmit → inject)
    - Custom question → grep/read whatever is relevant
 
 2. **Answer in a Keeper Block**, 3-8 lines. Be warm and brief — this is the keeper personality, not a manual.
@@ -119,12 +122,13 @@ Model per lens: haiku for simple work, sonnet for reasoning.
 Supervised  — you run /keeper:run in Claude Code.
               Keeper asks before acting. You approve PRs.
 
-Repeating   — you run /loop with /keeper:run.
-              Same as supervised, but on an interval.
-
-Autonomous  — deploy a tmux daemon via /keeper:deploy.
+Daemon      — deploy a tmux daemon via /keeper:deploy.
               Keeper works headless. Auto-creates PRs.
               Respects schedule + PR backpressure.
+
+Nudge       — keeper watches your edits via hooks.
+              Occasionally surfaces pre-cooked suggestions
+              for nearby improvements. You pick or skip.
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 ```

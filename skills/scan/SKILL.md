@@ -1,6 +1,8 @@
 ---
-description: Quick read-only health report across all active lenses — code complexity, labelling, docs coverage.
-allowed-tools: Read, Glob, Grep, Bash(git *, ls *, wc *), Agent
+name: scan
+description: Quick read-only health report across all active lenses — code complexity, labelling, docs coverage. Use this skill when the user asks about codebase health, wants a status check, or asks what needs attention. Also triggers when the user asks to analyze, audit, or check their code.
+user-invokable: true
+disable-model-invocation: false
 ---
 
 # Keeper Scan
@@ -35,6 +37,8 @@ Run /keeper:setup first to bootstrap config.
 
 Load `_keeper/memory.json` (create empty if missing).
 
+Create lock file: `touch _keeper/.lock`
+
 ---
 
 ## Step 1: Spawn Scanner
@@ -43,7 +47,7 @@ Output initial block:
 
 ```
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-🔒 Keeper v1.2.0 | scan | {N} lenses active
+🔒 Keeper v1.3.0 | scan | {N} lenses active
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 ▓▓▓▓░░░░░░░░░░░░░░░░░░░░░ 20% · Scanning...
 ```
@@ -72,7 +76,7 @@ Output the Keeper Block:
 
 ```
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-🔒 Keeper v1.2.0 | scan | {N} lenses active
+🔒 Keeper v1.3.0 | scan | {N} lenses active
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 {For each active lens with findings, one line:}
@@ -111,7 +115,7 @@ Top priorities:
 
 ```
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-🔒 Keeper v1.2.0 | scan | ✅ All clear
+🔒 Keeper v1.3.0 | scan | ✅ All clear
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 No issues found across {N} active lenses.
@@ -141,6 +145,8 @@ Use today's date: `YYYY-MM-DD`
 - `{date}-scan-results.txt` — plain text findings (structured scanner output)
 
 If the output directory doesn't exist, create it.
+
+Remove lock file: `rm -f _keeper/.lock`
 
 ---
 

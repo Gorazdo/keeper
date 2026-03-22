@@ -1,11 +1,13 @@
 ---
+name: run
 description: Autonomous work loop — scan across lenses, pick highest-priority targets, dispatch to agents, create focused PRs. Designed for /loop and tmux integration.
-allowed-tools: Read, Write, Edit, Glob, Grep, Bash, Agent, AskUserQuestion
+user-invokable: true
+disable-model-invocation: true
 ---
 
 # Keeper Run — Autonomous Loop
 
-Arguments: $ARGUMENTS (supports `--dry-run`, `--max-iterations N`, `--lens <name>`)
+Arguments: $ARGUMENTS (supports `--dry-run`, `--max-iterations N`, `--lens <name>`, `--workflow <name>`)
 
 You are the orchestrator for the keeper plugin. You run the outer loop: scan through active lenses, pick the highest-priority work, dispatch to the right agent, handle results, create PRs, update memory, and loop until done or sleeping hours.
 
@@ -33,20 +35,44 @@ Read `_keeper/memory.json`. Create empty if missing.
 
 Load `_keeper/briefing.md` if it exists — use planned targets as initial priority hints.
 
-### 0c. Parse arguments
+### 0c. Create lock file
+
+```bash
+touch _keeper/.lock
+```
+
+This prevents nudge hooks from firing during the run session. Clean up stale locks if present.
+
+### 0d. Parse arguments
 
 - `--dry-run` → scan and show targets only, no changes
 - `--max-iterations N` → override config
 - `--lens <name>` → restrict to a single lens (skip others)
+- `--workflow <name>` → load a workflow file, use its settings (see below)
 
-### 0d. Determine invocation context
+### 0d-wf. Load workflow (if `--workflow` specified)
+
+Search for the workflow file in order:
+1. `_keeper/workflows/{name}.md` (project custom)
+2. `workflows/{name}.md` (plugin templates)
+
+Parse the frontmatter. Extract:
+- `lenses` → overrides active lenses for this run (like `--lens` but multiple)
+- `reviewers` → list of GitHub usernames to request review on PRs
+- `auto-merge` → merge strategy (`squash`, `merge`, `rebase`) — enables `gh pr merge --auto`
+- `max-open-prs` → overrides `pr.maxOpenPRs` for this run
+- `cadence` → informational only (cadence is handled by the tmux loop, not by run)
+
+If the workflow file is not found, output error and STOP.
+
+### 0e. Determine invocation context
 
 Check if running interactively (Claude Code) or autonomously (tmux/bash):
 - If `AskUserQuestion` is available and user is present → **supervised mode**
 - If running via `/loop` → **repeating mode** (supervised between cycles)
 - If neither → **autonomous mode** (no user interaction)
 
-### 0e. Git strategy (supervised mode only)
+### 0f. Git strategy (supervised mode only)
 
 Use AskUserQuestion ONCE:
 - "Branch strategy for this session?"
@@ -56,7 +82,7 @@ Use AskUserQuestion ONCE:
 
 In autonomous mode: always create branch `keeper/session-{YYYY-MM-DD-HHmm}`.
 
-### 0f. Progressive calibration check
+### 0g. Progressive calibration check
 
 For each active lens, check if calibration is needed:
 - **labelling**: if `calibration.labelling.calibratedOn` is null → run labelling calibration (see `lenses/labelling.md` "Progressive calibration" section)
@@ -69,11 +95,11 @@ For each active lens, check if calibration is needed:
 
 In autonomous mode: skip calibration, use defaults.
 
-### 0g. Validate test runner (if code lenses active)
+### 0h. Validate test runner (if code lenses active)
 
 Run test command once to confirm it works. If fails: warn and disable code lenses for this session.
 
-### 0h. Initialize session
+### 0i. Initialize session
 
 ```
 outerIteration = 0
@@ -84,7 +110,7 @@ maxIterations = from args or config (default: 15)
 Output:
 ```
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-🔒 Keeper v1.2.0 | run | ⚙️ Session started
+🔒 Keeper v1.3.0 | run | ⚙️ Session started
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 {projectName} · {N} lenses active
@@ -122,6 +148,26 @@ For each PR returned:
 | **open, mergeable** | Add to skip list — these targets are pending review. Keep PR entry as-is. |
 | **closed (not merged)** | Revert in memory — remove targets from `completedFunctions[]`, remove PR entry. These will be re-scanned. |
 | **open, conflicted** | Flag for human attention. In supervised mode: notify user. In autonomous mode: log warning. |
+
+### 0.5b-ext. Extended PR checks (workflow-driven)
+
+If a workflow is active, run additional checks on open PRs:
+
+**CI status:**
+```bash
+gh pr checks {number} --json name,state,conclusion
+```
+- All passed → PR is healthy, waiting for review
+- Any failed → flag for human attention in supervised mode, log warning in autonomous mode
+
+**Review status:**
+```bash
+gh pr view {number} --json reviews,reviewRequests
+```
+- Changes requested → flag for human attention (review feedback loop is deferred — keeper does not auto-fix review comments yet)
+- Approved → if auto-merge is enabled, GitHub handles it automatically
+
+Without a workflow, skip these extended checks (backwards compatible).
 
 ### 0.5c. Backpressure gate
 
@@ -309,6 +355,24 @@ PREOF
 )"
 ```
 
+### PR lifecycle (workflow-driven)
+
+After `gh pr create`, if a workflow is active:
+
+**Reviewers** — if `reviewers` is set in the workflow:
+```bash
+gh pr edit {number} --add-reviewer {reviewer1},{reviewer2}
+```
+
+**Auto-merge** — if `auto-merge` is set in the workflow:
+```bash
+gh pr merge {number} --auto --{strategy}
+```
+
+This tells GitHub to merge automatically when all checks pass and reviews are approved. Keeper doesn't wait — it moves on to the next batch.
+
+If no workflow is active, or the workflow doesn't specify reviewers/auto-merge, skip these steps (backwards compatible).
+
 After PR creation, record to `_keeper/memory.json` `sessions.openPRs[]`:
 ```json
 { "number": N, "lens": "...", "branch": "keeper/...", "targets": ["functionName@file:line", ...], "status": "pending", "createdAt": "YYYY-MM-DDTHH:mm:ssZ" }
@@ -372,6 +436,8 @@ No more targets across {N} active lenses.
 
 ## Step 8: Final Report
 
+Remove lock file: `rm -f _keeper/.lock`
+
 ```
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 🔒 Keeper | run | 📊 Session Report
@@ -412,3 +478,4 @@ Memory updated: _keeper/memory.json
 10. **3-5 targets per lens batch.** Small PRs. Midnight snacks.
 11. **Reconcile PRs before scanning.** Always run Step 0.5 before Step 1. Never create duplicate work for targets with open PRs.
 12. **Respect PR backpressure.** If open PRs >= `pr.maxOpenPRs`, stop creating new work. Don't circumvent the gate.
+13. **Lock file discipline.** Create `_keeper/.lock` at start, remove at end. This prevents nudge hooks from firing during runs.

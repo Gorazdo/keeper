@@ -1,6 +1,6 @@
 # keeper
 
-Autonomous repository hygiene for [Claude Code](https://claude.ai/claude-code).
+Autonomous repository hygiene agent for [Claude Code](https://docs.anthropic.com/en/docs/claude-code).
 Scans your codebase through **12 lenses**, creates small focused PRs while you sleep.
 
 ## User Journey
@@ -9,16 +9,16 @@ Scans your codebase through **12 lenses**, creates small focused PRs while you s
 
 ```
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-🔒 Keeper v1.2.0 | setup | ✅ Complete
+🔒 Keeper v1.3.0 | setup | ✅ Complete
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 my-app · TypeScript/Next.js
 12 lenses active · test runner: vitest
+Nudge: enabled (30 min cooldown)
 
 Files created:
   .keeperrc.json          config
   _keeper/memory.json     short-term memory
-  _keeper/output/         scan output (supervised/autonomous)
   _keeper/encyclopedia/   long-term memory (5 articles)
   _keeper/briefing.md     morning briefing
 
@@ -31,14 +31,14 @@ Files created:
 
 ```
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-🔒 Keeper v1.2.0 | scan | 12 lenses active
+🔒 Keeper v1.3.0 | scan | 12 lenses active
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-🔧 untangling    3 functions · processOrder CC 24
-🧪 testability   2 exports without tests
-⚠️ error-handling 1 swallowed exception
-🏷️ labelling     14 files unlabelled
-📝 jsdoc         9 exports missing docs
+🔧 untangling     3 functions · processOrder CC 24
+🧪 testability    2 exports without tests
+⚠️ error-handling  1 swallowed exception
+🏷️ labelling      14 files unlabelled
+📝 jsdoc          9 exports missing docs
 
 Top priorities:
   1. processOrder — complexity 24 (threshold 10)
@@ -54,13 +54,13 @@ Top priorities:
 
 ```
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-🔒 Keeper v1.2.0 | run | 📊 Session Report
+🔒 Keeper v1.3.0 | run | 📊 Session Report
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-✅ processOrder    — CC: 24→8   cov: 72%→86%
-✅ validateInput   — CC: 18→6   cov: 65%→91%
+✅ processOrder   — CC: 24→8   cov: 72%→86%
+✅ validateInput  — CC: 18→6   cov: 65%→91%
 ✅ 14 files labelled with category headers
-⚠️ handleWebhook  — stalled (needs human review)
+⚠️ handleWebhook — stalled (needs human review)
 
 PRs created: 2 · Commits: 7
 Lenses worked: untangling, labelling
@@ -84,14 +84,14 @@ Lenses worked: untangling, labelling
 | | Lens | Detects |
 |---|---|---|
 | 🏷️ | labelling | Files without category headers |
-| 📝 | jsdoc | Missing or incomplete JSDoc |
-| 📄 | markdown | Markdown structure and content quality |
+| 📝 | jsdoc | Missing or incomplete JSDoc on exports |
+| 📄 | markdown | Structure and content quality |
 | 📋 | docs-coverage | Documentation gaps and drift |
 
-## Commands
+## Skills
 
 ```
-/keeper:setup    Bootstrap config, detect stack
+/keeper:setup    Bootstrap config, detect stack, create memory files
 /keeper:scan     Read-only health report across active lenses
 /keeper:run      Autonomous loop — scan → pick → fix → PR → repeat
 /keeper:sleep    Consolidate learnings into long-term memory

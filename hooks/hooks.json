@@ -1,0 +1,26 @@
+{
+  "description": "Keeper nudge mode — collects edited file paths, injects queue for lens-based analysis",
+  "hooks": {
+    "PostToolUse": [
+      {
+        "matcher": "Write|Edit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "${CLAUDE_PLUGIN_ROOT}/scripts/nudge-collect.sh"
+          }
+        ]
+      }
+    ],
+    "UserPromptSubmit": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "${CLAUDE_PLUGIN_ROOT}/scripts/nudge-inject.sh"
+          }
+        ]
+      }
+    ]
+  }
+}

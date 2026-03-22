@@ -11,18 +11,28 @@ Autonomous repository hygiene agent. Scans, labels, untangles, and tends codebas
 ```
 keeper/
 ├── personality.md                   # Keeper voice, output format, principles
-├── .claude-plugin/plugin.json       # Plugin manifest v1.2.0
+├── .claude-plugin/plugin.json       # Plugin manifest v1.3.0
 ├── agents/
 │   ├── scanner.md                   # Unified multi-lens scanner (haiku)
 │   └── doer.md                      # Universal worker — all 12 lenses (model per lens)
-├── commands/
-│   ├── setup.md                     # Bootstrap config + memory + encyclopedia
-│   ├── scan.md                      # Quick read-only health report
-│   ├── run.md                       # Autonomous work loop
-│   ├── sleep.md                     # Memory consolidation
-│   ├── deploy.md                    # Generate tmux/bash scripts
-│   ├── help.md                      # Visual overview + interactive Q&A
-│   └── lib-readme.md                # Self-tending README generator
+├── skills/                          # 7 skills (all user-invokable)
+│   ├── setup/SKILL.md               # Bootstrap config + memory + encyclopedia
+│   ├── scan/SKILL.md                # Quick read-only health report
+│   ├── run/SKILL.md                 # Autonomous work loop
+│   ├── sleep/SKILL.md               # Memory consolidation + housekeeping
+│   ├── deploy/SKILL.md              # Workflow deployment helper
+│   ├── help/SKILL.md                # Visual overview + interactive Q&A
+│   └── complexity-scorer/SKILL.md   # SonarQube algorithm fallback
+├── hooks/
+│   └── hooks.json                   # Nudge mode hooks (PostToolUse + UserPromptSubmit)
+├── workflows/                       # Daemon workflow templates
+│   ├── code-quality.md              # Untangling + micro-hygiene + error-handling, 4h
+│   ├── docs-hygiene.md              # Labelling + jsdoc + docs-coverage, daily
+│   └── full-service.md              # All 12 lenses, 4h, copilot review, auto-merge
+├── scripts/
+│   ├── lib.sh                        # Shared guards and helpers
+│   ├── nudge-collect.sh              # Append edited file paths to queue (no analysis)
+│   └── nudge-inject.sh              # Inject queue on next user message after cooldown
 ├── lenses/                          # 8 code + 4 docs lenses
 │   ├── untangling.md                # code · function
 │   ├── modernization.md             # code · function
@@ -36,11 +46,21 @@ keeper/
 │   ├── jsdoc.md                     # docs · function
 │   ├── markdown.md                  # docs · file
 │   └── docs-coverage.md             # docs · module
-├── skills/
-│   ├── complexity-scorer/SKILL.md   # SonarQube algorithm fallback
-│   └── housekeeping/SKILL.md        # Runtime file structure enforcement
+├── .claude/skills/
+│   └── lib-readme/SKILL.md          # Repo-level: self-tending README generator
 └── plan/                            # Implementation phases
 ```
+
+## Operating Modes (3+1)
+
+| Mode | Trigger | Mechanism |
+|------|---------|-----------|
+| **+1 Onboarding** | User learns/configures | setup, help, scan skills |
+| **Supervised** | User invokes `/keeper:run` | run skill, doer agent |
+| **Daemon** | Workflow + tmux from deploy | run --workflow, tmux sessions |
+| **Nudge** | User edits a file | PostToolUse hook → collect → UserPromptSubmit hook → inject → haiku scanner |
+
+**Nudge mode:** Collect-then-analyze pipeline. PostToolUse (Write|Edit) runs `scripts/nudge-collect.sh` which appends the edited file path to `_keeper/nudge-queue.txt` (no analysis, just collection). When the user sends their next message after cooldown elapses (default 30 min), UserPromptSubmit runs `scripts/nudge-inject.sh` which outputs the queue as additional context. Claude then spawns a haiku scanner subagent scoped to those files, running only the configured nudge lenses (default: labelling, micro-hygiene, jsdoc). All detection logic stays in lenses — shell scripts do zero analysis. Guards: lock file (`_keeper/.lock`) prevents nudge during keeper operations.
 
 ## Runtime Files (created in target project)
 
@@ -49,6 +69,11 @@ keeper/
 ├── .keeperrc.json                   # Config (procedural memory)
 └── _keeper/
     ├── memory.json                  # Short-term memory
+    ├── .lock                        # Present during keeper operations (run/scan/sleep)
+    ├── workflows/                   # User-created workflow files
+    ├── nudge-queue.txt              # Edited file paths awaiting lens scan (transient)
+    ├── nudge-last                   # Last nudge timestamp (plain text, one line)
+    ├── nudge.conf                   # Nudge config (key=value, written by setup)
     ├── output/
     │   ├── supervised/              # Interactive session output
     │   └── autonomous/              # Daemon/background output
@@ -59,8 +84,7 @@ keeper/
     │   ├── taxonomy.md
     │   └── conventions.md
     ├── history.md                   # Heritage, moments
-    ├── briefing.md                  # Morning briefing
-    └── daemon.sh                    # Generated daemon script
+    └── briefing.md                  # Morning briefing
 ```
 
 ## Memory Model
@@ -110,10 +134,11 @@ Keeper tracks PRs it creates and reconciles them before each scan cycle.
 
 ## Key Patterns
 
-- Lenses define detection + agent assignment; PR batching strategy is orchestrator-level (run command)
-- Progressive calibration: labelling and untangling calibrate on first supervised run (see `run.md` Step 0f); other lenses use config defaults
+- Lenses define detection + agent assignment; PR batching strategy is orchestrator-level (run skill)
+- Progressive calibration: labelling and untangling calibrate on first supervised run (see `skills/run/SKILL.md` Step 0g); other lenses use config defaults
 - One lens per PR ("midnight snacks")
-- Sleep consolidation: triage → consolidate → prune → integrate → plan → brief
+- Sleep consolidation: triage → consolidate → prune → integrate → plan → brief → housekeep
 - Backpressure gates: tests pass, coverage held, complexity down, signature unchanged
 - Escalation: sonnet stalls → opus + stall context
 - PR lifecycle: create → reconcile → backpressure gate
+- Lock file (`_keeper/.lock`): created by run/scan/sleep, prevents nudge hooks from firing during operations

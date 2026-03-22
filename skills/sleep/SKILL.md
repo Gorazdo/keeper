@@ -1,13 +1,15 @@
 ---
-description: Memory consolidation — promote proven patterns to encyclopedia, prune short-term memory, generate morning briefing. Runs during sleeping hours or on demand.
-allowed-tools: Read, Write, Edit, Glob, Grep, Bash, Agent, AskUserQuestion
+name: sleep
+description: Memory consolidation — promote proven patterns to encyclopedia, prune short-term memory, enforce directory structure, generate morning briefing. Runs during sleeping hours or on demand.
+user-invokable: true
+disable-model-invocation: true
 ---
 
 # Keeper Sleep — Memory Consolidation
 
 Arguments: $ARGUMENTS (supports `--dry-run`)
 
-You are the night-shift keeper. While the codebase rests, you consolidate what was learned into long-term memory and prepare the morning briefing.
+You are the night-shift keeper. While the codebase rests, you consolidate what was learned into long-term memory, enforce directory hygiene, and prepare the morning briefing.
 
 Follow the personality and output format from `personality.md`.
 
@@ -27,7 +29,15 @@ Run /keeper:setup first.
 ```
 STOP.
 
-### 0b. Check pending work
+### 0b. Create lock file
+
+```bash
+touch _keeper/.lock
+```
+
+Clean up stale locks if present.
+
+### 0c. Check pending work
 
 Read `sessions.pendingConsolidation` from memory. If empty:
 ```
@@ -37,18 +47,18 @@ Read `sessions.pendingConsolidation` from memory. If empty:
 No pending learnings. Memory is up to date.
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 ```
-STOP.
+Skip to Step 6.5 (Housekeep) — still run housekeeping even with nothing to consolidate.
 
-### 0c. Parse arguments
+### 0d. Parse arguments
 
 - `--dry-run` → show what would be consolidated, don't write anything
 
-### 0d. Initialize
+### 0e. Initialize
 
 Output:
 ```
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-🔒 Keeper v1.2.0 | sleep | 🌙 Consolidating
+🔒 Keeper v1.3.0 | sleep | 🌙 Consolidating
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 {N} pending entries to process.
@@ -296,31 +306,68 @@ In `_keeper/memory.json`:
 ```
 
 ```
-▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓ 100% · Briefing written
+▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓░ 88% · Briefing written
 ```
 
 ---
 
 ## Step 6.5: HOUSEKEEP
 
-Secondary gate before final report. Enforce the canonical `_keeper/` structure.
+Enforce the canonical `_keeper/` directory structure.
 
-1. **Detect strays** — Glob project root for stray keeper files:
-   - `.keeper-memory.json` → move to `_keeper/memory.json`
-   - `keeper-daemon.sh` → move to `_keeper/daemon.sh`
-   - `KEEPER_SCAN*` → move to `_keeper/output/{mode}/` with date prefix
-   - `keeper-*.md` → inspect and relocate to `_keeper/output/`
-   - Do NOT flag `.keeperrc.json` (stays at root)
+### Canonical structure
 
-2. **Move strays** — relocate each to its correct `_keeper/` location (see `skills/housekeeping/SKILL.md` for the mapping)
+```
+.keeperrc.json                          # Procedural memory (stays at root)
+_keeper/
+├── memory.json                         # Short-term memory
+├── output/
+│   ├── supervised/                     # Interactive session output
+│   │   └── YYYY-MM-DD-{type}.{ext}
+│   └── autonomous/                     # Daemon/background output
+│       └── YYYY-MM-DD-{type}.{ext}
+├── encyclopedia/                       # Long-term memory
+│   ├── architecture.md
+│   ├── patterns.md
+│   ├── gotchas.md
+│   ├── taxonomy.md
+│   └── conventions.md
+├── history.md                          # Heritage, moments
+└── briefing.md                         # Morning briefing
+```
 
-3. **Validate structure** — verify `_keeper/` has required subdirectories:
-   - `_keeper/output/supervised/`
-   - `_keeper/output/autonomous/`
-   - `_keeper/encyclopedia/`
-   - Create any missing directories
+**Output naming:** `YYYY-MM-DD-{type}.{ext}` — e.g. `2026-03-19-scan-detailed.md`
 
-4. **Report** — track what was cleaned up for the final report
+### Detect and relocate stray files
+
+Glob project root for stray keeper files:
+
+| Pattern | Correct location |
+|---------|-----------------|
+| `.keeper-memory.json` | `_keeper/memory.json` |
+| `keeper-daemon.sh` | delete (no longer generated) |
+| `KEEPER_SCAN*` | `_keeper/output/{mode}/YYYY-MM-DD-scan-*` |
+| `keeper-*.md` | Inspect and relocate to `_keeper/output/` |
+
+**Never flag:** `.keeperrc.json` — this is a conventional dotfile that stays at root.
+
+For each stray file found:
+1. Determine destination from the table above
+2. Add date prefix if missing (use file mtime or today's date)
+3. Default to `supervised/` if invocation context is unknown
+4. Move file to correct location
+5. Log what was moved
+
+### Validate structure
+
+Verify `_keeper/` has required subdirectories and create any missing:
+- `_keeper/output/supervised/`
+- `_keeper/output/autonomous/`
+- `_keeper/encyclopedia/`
+
+Do NOT create missing files (those are created by setup).
+
+### Report
 
 ```
 ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓░ 92% · Housekeeping complete
@@ -329,6 +376,8 @@ Secondary gate before final report. Enforce the canonical `_keeper/` structure.
 ---
 
 ## Step 7: Report
+
+Remove lock file: `rm -f _keeper/.lock`
 
 ```
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
@@ -366,4 +415,6 @@ Briefing: _keeper/briefing.md
 4. **Dry-run is read-only.** With `--dry-run`, show classification and plans but write nothing.
 5. **Bounded memory.** Respect cap limits. Short-term memory must stay lean.
 6. **Honest briefing.** Report what actually happened, not what was planned. Include failures and stalls.
-7. **Idempotent.** Running sleep twice in a row with no new work should be a no-op (empty pending → stop).
+7. **Idempotent.** Running sleep twice in a row with no new work should be a no-op (empty pending → skip to housekeep).
+8. **Always housekeep.** Even if there's nothing to consolidate, still run Step 6.5.
+9. **Lock file discipline.** Create `_keeper/.lock` at start, remove at end.

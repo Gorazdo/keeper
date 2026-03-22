@@ -1,6 +1,8 @@
 ---
-description: Regenerate README.md by running keeper on itself and capturing real terminal output for the User Journey section.
-allowed-tools: Read, Write, Edit, Glob, Grep, Bash(git *, ls *, wc *), Agent
+name: lib-readme
+description: Regenerate README.md by running keeper on itself and capturing real terminal output for the User Journey section. This is a repo-level skill for maintaining the keeper plugin's own README.
+user-invokable: true
+disable-model-invocation: true
 ---
 
 # Keeper Lib: README
@@ -18,16 +20,16 @@ Follow the personality and output format from `personality.md`.
 Output:
 ```
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-🔒 Keeper v1.2.0 | lib:readme | 📄 Regenerating
+🔒 Keeper v1.3.0 | lib:readme | 📄 Regenerating
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 ▓░░░░░░░░░░░░░░░░░░░░░░░░ 0% · Reading sources...
 ```
 
 Read in parallel:
 1. `personality.md` — output format, emoji maps, block structure
-2. `commands/setup.md` — setup output format
-3. `commands/scan.md` — scan output format
-4. `commands/run.md` — run session report format
+2. `skills/setup/SKILL.md` — setup output format
+3. `skills/scan/SKILL.md` — scan output format
+4. `skills/run/SKILL.md` — run session report format
 5. `lenses/*.md` — all lens files (for the lens table)
 6. `README.md` — current README as base
 7. `.claude-plugin/plugin.json` — version number
@@ -41,7 +43,7 @@ Spawn a subagent to run `/keeper:setup` against this repo (the keeper plugin rep
 - Capture the final setup output block
 - Extract: project detection, lenses activated, files created
 
-If setup cannot run (no target project context), synthesize a representative setup block using the format from `commands/setup.md` and real data from the keeper repo structure.
+If setup cannot run (no target project context), synthesize a representative setup block using the format from `skills/setup/SKILL.md` and real data from the keeper repo structure.
 
 ```
 ▓▓▓▓▓▓▓▓░░░░░░░░░░░░░░░░ 33% · Setup output captured
@@ -55,7 +57,7 @@ Spawn a subagent to run `/keeper:scan` against this repo. The agent should:
 - Run scan and capture the output block
 - Extract: per-lens findings with emoji, top priorities
 
-If scan cannot run, synthesize a representative scan block using the format from `commands/scan.md` with realistic findings based on actually scanning the keeper repo's own code.
+If scan cannot run, synthesize a representative scan block using the format from `skills/scan/SKILL.md` with realistic findings based on actually scanning the keeper repo's own code.
 
 ```
 ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓░░░░░░░░ 66% · Scan output captured
@@ -100,14 +102,15 @@ Using the captured outputs, regenerate `README.md` with this exact structure. Ta
 {Two tables with emoji column — code lenses then docs lenses}
 {Build from actual lens files found in lenses/}
 
-## Commands
+## Skills
 
 ```
-/keeper:setup    Bootstrap config, detect stack, choose lenses
+/keeper:setup    Bootstrap config, detect stack, create memory files
 /keeper:scan     Read-only health report across active lenses
 /keeper:run      Autonomous loop — scan → pick → fix → PR → repeat
 /keeper:sleep    Consolidate learnings into long-term memory
 /keeper:deploy   Generate tmux script for background daemon
+/keeper:help     Visual overview + interactive Q&A
 ```
 
 ## Memory
@@ -149,7 +152,7 @@ Write the final README to `README.md`.
 
 ```
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-🔒 Keeper v1.2.0 | lib:readme | ✅ Done
+🔒 Keeper v1.3.0 | lib:readme | ✅ Done
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 README.md regenerated — {N} lines

@@ -1,6 +1,8 @@
 ---
-description: Bootstrap keeper in your project — detect stack, create config and memory files.
-allowed-tools: Read, Write, Glob, Grep, Bash(git *, ls *, wc *, cat package.json, cat *.json, cat *.toml, cat *.yaml), AskUserQuestion
+name: setup
+description: Bootstrap keeper in your project — detect stack, create config and memory files. Use this skill when the user wants to set up keeper, configure it for a new project, reconfigure an existing setup, or recalibrate keeper settings including nudge behavior.
+user-invokable: true
+disable-model-invocation: true
 ---
 
 # Keeper Setup
@@ -30,7 +32,7 @@ Follow the personality and output format from `personality.md`. Every response u
 Output the Keeper Block header:
 ```
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-🔒 Keeper v1.2.0 | setup | Phase 1/3
+🔒 Keeper v1.3.0 | setup | Phase 1/3
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 ▓░░░░░░░░░░░░░░░░░░░░░░░░ 10% · Detecting project...
 ```
@@ -141,6 +143,11 @@ Write `.keeperrc.json`:
     "maxFunctionsPerPr": 5,
     "maxOpenPRs": 3,
     "branchPrefix": "keeper"
+  },
+  "nudge": {
+    "enabled": true,
+    "cooldownMinutes": 30,
+    "lenses": ["labelling", "micro-hygiene", "jsdoc"]
   }
 }
 ```
@@ -179,7 +186,7 @@ Write `_keeper/memory.json`:
     "lastRun": null,
     "lastSleep": null,
     "pendingConsolidation": [],
-    "openPRs": []  // Each entry: { "number": N, "lens": "...", "branch": "keeper/...", "targets": ["fn@file:line", ...], "status": "pending"|"merged"|"rejected", "createdAt": "ISO8601" }
+    "openPRs": []
   },
   "summary": ""
 }
@@ -224,7 +231,55 @@ Update progress:
 ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓░░░ 90% · Finalizing...
 ```
 
-### 3a. Gitignore
+### 3a. Nudge configuration
+
+Use AskUserQuestion:
+- Question: "Enable nudge mode? Keeper watches your edits and runs quick lens checks on files you touch."
+- Options:
+  - **Yes (recommended)** — "Nudge every ~30 min using labelling, micro-hygiene, jsdoc lenses"
+  - **No** — "Disable nudge — I'll run keeper manually"
+  - **Custom** — "Let me configure cooldown and lens selection"
+
+If Custom: ask for cooldown minutes and which lenses to include (from the haiku-tier lenses). Update `nudge` section in `.keeperrc.json`.
+
+After nudge configuration, write `_keeper/nudge.conf` (simple key=value format read by hook scripts):
+```
+enabled=true
+cooldown_minutes=30
+extensions={derived from general.sourceGlobs — e.g., ts|tsx|js|jsx|py}
+lenses=labelling|micro-hygiene|jsdoc
+```
+
+This file avoids JSON parsing in the hook scripts. Regenerate it on `--reconfigure`.
+
+### 3b. PR lifecycle defaults
+
+Use AskUserQuestion:
+- Question: "How should keeper handle PRs by default?"
+- Options:
+  - **Create only (recommended)** — "I'll review and merge myself"
+  - **Request review** — "Add a reviewer to each PR"
+  - **Full lifecycle** — "Request review + auto-merge when approved and CI passes"
+
+If "Request review" or "Full lifecycle": ask for reviewer username(s) (default: `copilot`).
+If "Full lifecycle": ask for merge strategy (`squash`, `merge`, `rebase`).
+
+Save to `.keeperrc.json` `pr` section:
+```json
+{
+  "pr": {
+    "maxFunctionsPerPr": 5,
+    "maxOpenPRs": 3,
+    "branchPrefix": "keeper",
+    "reviewers": ["copilot"],
+    "autoMerge": "squash"
+  }
+}
+```
+
+These defaults apply when running without a workflow. Workflows can override them.
+
+### 3c. Gitignore
 
 Use AskUserQuestion:
 - Question: "Add keeper files to .gitignore?"
@@ -235,19 +290,20 @@ Use AskUserQuestion:
 
 Apply choice to `.gitignore` (create if needed, append if exists).
 
-### 3b. Done
+### 3c. Done
 
 Update progress to 100%.
 
 Output the final Keeper Block:
 ```
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-🔒 Keeper v1.2.0 | setup | ✅ Complete
+🔒 Keeper v1.3.0 | setup | ✅ Complete
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 {projectName} · {language}/{framework}
 12 lenses active (all)
 Test runner: {runner}
+Nudge: {enabled|disabled}
 
 Files created:
   .keeperrc.json

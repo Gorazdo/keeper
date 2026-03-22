@@ -1,47 +1,40 @@
 {
   "name": "keeper",
   "description": "Autonomous repository hygiene agent — scans, labels, untangles, and tends your codebase with brain-inspired memory and sleep cycles. Everything is a lens.",
-  "version": "1.2.0",
+  "version": "1.3.0",
   "author": {
     "name": "gorazdo"
   },
   "license": "MIT",
   "repository": "https://github.com/gorazdo/keeper",
-  "commands": [
+  "skills": [
     {
       "name": "setup",
-      "description": "Bootstrap keeper in your project — detect stack, choose lenses, create config and memory files.",
-      "file": "commands/setup.md"
+      "file": "skills/setup/SKILL.md"
     },
     {
       "name": "scan",
-      "description": "Quick read-only health report across all active lenses — code complexity, labelling, docs coverage.",
-      "file": "commands/scan.md"
+      "file": "skills/scan/SKILL.md"
     },
     {
       "name": "run",
-      "description": "Autonomous work loop — scan across lenses, pick highest-priority targets, dispatch to agents, create focused PRs.",
-      "file": "commands/run.md"
+      "file": "skills/run/SKILL.md"
     },
     {
       "name": "sleep",
-      "description": "Memory consolidation — promote proven patterns to encyclopedia, prune short-term memory, generate morning briefing.",
-      "file": "commands/sleep.md"
+      "file": "skills/sleep/SKILL.md"
     },
     {
       "name": "deploy",
-      "description": "Generate tmux/bash scripts for autonomous background running. Interactive setup for daemon configuration.",
-      "file": "commands/deploy.md"
+      "file": "skills/deploy/SKILL.md"
     },
     {
       "name": "help",
-      "description": "Brief visual overview of how keeper works, plus interactive Q&A.",
-      "file": "commands/help.md"
+      "file": "skills/help/SKILL.md"
     },
     {
-      "name": "lib:readme",
-      "description": "Regenerate README.md by running keeper on itself and capturing real terminal output for the User Journey section.",
-      "file": "commands/lib-readme.md"
+      "name": "complexity-scorer",
+      "file": "skills/complexity-scorer/SKILL.md"
     }
   ],
   "agents": [
@@ -54,14 +47,5 @@
       "file": "agents/doer.md"
     }
   ],
-  "skills": [
-    {
-      "name": "complexity-scorer",
-      "file": "skills/complexity-scorer/SKILL.md"
-    },
-    {
-      "name": "housekeeping",
-      "file": "skills/housekeeping/SKILL.md"
-    }
-  ]
+  "hooks": "./hooks/hooks.json"
 }
