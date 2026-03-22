@@ -20,7 +20,7 @@ Follow the personality and output format from `personality.md`.
 Output:
 ```
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-🔒 Keeper v{version} | lib:readme | 📄 Regenerating
+🌿 Keeper v{version} | lib:readme | 📄 Regenerating
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 ▓░░░░░░░░░░░░░░░░░░░░░░░░ 0% · Reading sources...
 ```
@@ -134,7 +134,7 @@ MIT
 
 ### Rules
 
-- **Use real keeper block format** — ━━━ borders, 🔒 header, emoji prefixes, action footers
+- **Use real keeper block format** — ━━━ borders, 🌿 header, emoji prefixes, action footers
 - **Terminal blocks are the demo** — they must look exactly like what users will see
 - **Under 90 lines** — no walls of text, no redundant explanations
 - **Lens table from source** — read actual lens files, don't hardcode
@@ -152,7 +152,7 @@ Write the final README to `README.md`.
 
 ```
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-🔒 Keeper v{version} | lib:readme | ✅ Done
+🌿 Keeper v{version} | lib:readme | ✅ Done
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 README.md regenerated — {N} lines

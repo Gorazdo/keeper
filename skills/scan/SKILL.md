@@ -1,6 +1,6 @@
 ---
 name: scan
-description: Quick read-only health report across all active lenses — code complexity, labelling, docs coverage. Use this skill when the user asks about codebase health, wants a status check, or asks what needs attention. Also triggers when the user asks to analyze, audit, or check their code.
+description: 🌿 Quick read-only health report across all active lenses — code complexity, labelling, docs coverage. Use this skill when the user asks about codebase health, wants a status check, or asks what needs attention. Also triggers when the user asks to analyze, audit, or check their code.
 user-invokable: true
 disable-model-invocation: false
 ---
@@ -27,7 +27,7 @@ Load `.keeperrc.json` at project root. If missing, output error:
 
 ```
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-🔒 Keeper | scan | ⚠️ Not set up
+🌿 Keeper | scan | ⚠️ Not set up
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 Run /keeper:setup first to bootstrap config.
@@ -47,7 +47,7 @@ Output initial block:
 
 ```
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-🔒 Keeper v{version} | scan | {N} lenses active
+🌿 Keeper v{version} | scan | {N} lenses active
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 ▓▓▓▓░░░░░░░░░░░░░░░░░░░░░ 20% · Scanning...
 ```
@@ -76,7 +76,7 @@ Output the Keeper Block:
 
 ```
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-🔒 Keeper v{version} | scan | {N} lenses active
+🌿 Keeper v{version} | scan | {N} lenses active
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 {For each active lens with findings, one line:}
@@ -103,7 +103,7 @@ Top priorities:
 | testability | 🧪 |
 | boundaries | 🧱 |
 | micro-hygiene | 🧹 |
-| type-safety | 🔒 |
+| type-safety | 🛡️ |
 | friction | 🔗 |
 | error-handling | ⚠️ |
 | labelling | 🏷️ |
@@ -115,7 +115,7 @@ Top priorities:
 
 ```
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-🔒 Keeper v{version} | scan | ✅ All clear
+🌿 Keeper v{version} | scan | ✅ All clear
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 No issues found across {N} active lenses.

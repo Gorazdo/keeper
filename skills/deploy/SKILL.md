@@ -1,6 +1,6 @@
 ---
 name: deploy
-description: Pick or create a workflow, get ready-to-use tmux commands for daemon mode. Use this skill when the user wants to run keeper in the background, set up a daemon, configure autonomous mode, or deploy a workflow.
+description: 🌿 Pick or create a workflow, get ready-to-use tmux commands for daemon mode. Use this skill when the user wants to run keeper in the background, set up a daemon, configure autonomous mode, or deploy a workflow.
 user-invokable: true
 disable-model-invocation: true
 ---
@@ -22,7 +22,7 @@ Follow the personality and output format from `personality.md`.
 Read `.keeperrc.json`. If missing:
 ```
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-🔒 Keeper | deploy | ⚠️ Not set up
+🌿 Keeper | deploy | ⚠️ Not set up
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 Run /keeper:setup first.
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
@@ -39,7 +39,7 @@ command -v tmux
 If not found:
 ```
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-🔒 Keeper | deploy | ⚠️ tmux not found
+🌿 Keeper | deploy | ⚠️ tmux not found
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 Install tmux first:
   macOS:  brew install tmux
@@ -139,7 +139,7 @@ Output:
 
 ```
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-🔒 Keeper v{version} | deploy | 🚀 {workflow name}
+🌿 Keeper v{version} | deploy | 🚀 {workflow name}
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 Workflow: {name} — {description}

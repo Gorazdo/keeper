@@ -1,6 +1,6 @@
 ---
 name: help
-description: Brief visual overview of how keeper works, plus interactive Q&A. Use this skill when the user asks how keeper works, what keeper does, what lenses are, how to use keeper, or any question about keeper's features, modes, commands, memory model, or architecture. Also triggers on "explain keeper", "what is keeper", or "help with keeper".
+description: 🌿 Brief visual overview of how keeper works, plus interactive Q&A. Use this skill when the user asks how keeper works, what keeper does, what lenses are, how to use keeper, or any question about keeper's features, modes, commands, memory model, or architecture. Also triggers on "explain keeper", "what is keeper", or "help with keeper".
 user-invokable: true
 disable-model-invocation: false
 ---
@@ -21,7 +21,7 @@ Output the Keeper Block:
 
 ```
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-🔒 Keeper v{version} | help | ❓ How It Works
+🌿 Keeper v{version} | help | ❓ How It Works
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
         scan ──→ prioritize ──→ work ──→ PR
@@ -97,7 +97,7 @@ For each question:
 **Lenses:**
 ```
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-🔒 Keeper | help | 🔍 Lenses
+🌿 Keeper | help | 🔍 Lenses
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 🔧 Code (8): untangling, modernization, testability,
@@ -116,7 +116,7 @@ Model per lens: haiku for simple work, sonnet for reasoning.
 **Modes:**
 ```
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-🔒 Keeper | help | 📡 Modes
+🌿 Keeper | help | 📡 Modes
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 Supervised  — you run /keeper:run in Claude Code.

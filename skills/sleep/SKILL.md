@@ -1,6 +1,6 @@
 ---
 name: sleep
-description: Memory consolidation — promote proven patterns to encyclopedia, prune short-term memory, enforce directory structure, generate morning briefing. Runs during sleeping hours or on demand.
+description: 🌿 Memory consolidation — promote proven patterns to encyclopedia, prune short-term memory, enforce directory structure, generate morning briefing. Runs during sleeping hours or on demand.
 user-invokable: true
 disable-model-invocation: true
 ---
@@ -22,7 +22,7 @@ Follow the personality and output format from `personality.md`.
 Read `.keeperrc.json` and `_keeper/memory.json`. If either is missing:
 ```
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-🔒 Keeper | sleep | ⚠️ Not set up
+🌿 Keeper | sleep | ⚠️ Not set up
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 Run /keeper:setup first.
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
@@ -42,7 +42,7 @@ The timestamp lets hooks detect stale locks (>60 min) from crashed sessions.
 Read `sessions.pendingConsolidation` from memory. If empty:
 ```
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-🔒 Keeper | sleep | 🌙 Nothing to consolidate
+🌿 Keeper | sleep | 🌙 Nothing to consolidate
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 No pending learnings. Memory is up to date.
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
@@ -58,7 +58,7 @@ Skip to Step 6.5 (Housekeep) — still run housekeeping even with nothing to con
 Output:
 ```
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-🔒 Keeper v{version} | sleep | 🌙 Consolidating
+🌿 Keeper v{version} | sleep | 🌙 Consolidating
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 {N} pending entries to process.
@@ -381,7 +381,7 @@ Remove lock file: `rm -f _keeper/.lock`
 
 ```
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-🔒 Keeper | sleep | 🌙 Consolidation Complete
+🌿 Keeper | sleep | 🌙 Consolidation Complete
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 📊 Triage: {N} promoted · {M} kept · {K} discarded

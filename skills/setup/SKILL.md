@@ -1,6 +1,6 @@
 ---
 name: setup
-description: Bootstrap keeper in your project — detect stack, create config and memory files. Use this skill when the user wants to set up keeper, configure it for a new project, reconfigure an existing setup, or recalibrate keeper settings including nudge behavior.
+description: 🌿 Bootstrap keeper in your project — detect stack, create config and memory files. Use this skill when the user wants to set up keeper, configure it for a new project, reconfigure an existing setup, or recalibrate keeper settings including nudge behavior.
 user-invokable: true
 disable-model-invocation: true
 ---
@@ -32,7 +32,7 @@ Follow the personality and output format from `personality.md`. Every response u
 Output the Keeper Block header:
 ```
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-🔒 Keeper v{version} | setup | Phase 1/3
+🌿 Keeper v{version} | setup | Phase 1/3
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 ▓░░░░░░░░░░░░░░░░░░░░░░░░ 10% · Detecting project...
 ```
@@ -297,7 +297,7 @@ Update progress to 100%.
 Output the final Keeper Block:
 ```
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-🔒 Keeper v{version} | setup | ✅ Complete
+🌿 Keeper v{version} | setup | ✅ Complete
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 {projectName} · {language}/{framework}

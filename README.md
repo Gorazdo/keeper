@@ -9,7 +9,7 @@ Scans your codebase through **12 lenses**, creates small focused PRs while you s
 
 ```
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-🔒 Keeper v1.3.1 | setup | ✅ Complete
+🌿 Keeper v1.3.1 | setup | ✅ Complete
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 my-app · TypeScript/Next.js
@@ -31,7 +31,7 @@ Files created:
 
 ```
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-🔒 Keeper v1.3.1 | scan | 12 lenses active
+🌿 Keeper v1.3.1 | scan | 12 lenses active
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 🔧 untangling      3 functions · processOrder CC 24
@@ -54,7 +54,7 @@ Top priorities:
 
 ```
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-🔒 Keeper v1.3.1 | run | 📊 Session Report
+🌿 Keeper v1.3.1 | run | 📊 Session Report
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 ✅ processOrder   — CC: 24→8   cov: 72%→86%
@@ -77,7 +77,7 @@ Lenses worked: untangling, labelling
 | 🧪 | testability | Untested exports, no seams, logic tangled with effects |
 | 🧱 | boundaries | Shallow, leaky, or blurred interfaces |
 | 🧹 | micro-hygiene | Verbose→concise, mutable→immutable, small compounds |
-| 🔒 | type-safety | Type holes, unvalidated boundaries, opaque contracts |
+| 🛡️ | type-safety | Type holes, unvalidated boundaries, opaque contracts |
 | 🔗 | friction | Scattered concepts, test deserts, navigation cost |
 | ⚠️ | error-handling | Swallowed errors, inconsistent strategies, missing paths |
 

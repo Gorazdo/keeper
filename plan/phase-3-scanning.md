@@ -24,7 +24,7 @@ Read-only health report. Spawns scanner with all active lenses, displays summary
 
 ```
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-🔒 Keeper v1.2.0 | scan | 5 lenses active
+🌿 Keeper v1.2.0 | scan | 5 lenses active
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 📋 docs-coverage: 78% · 2 drift issues
