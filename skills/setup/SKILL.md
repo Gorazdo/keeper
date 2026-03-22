@@ -32,7 +32,7 @@ Follow the personality and output format from `personality.md`. Every response u
 Output the Keeper Block header:
 ```
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-🔒 Keeper v1.3.0 | setup | Phase 1/3
+🔒 Keeper v1.3.1 | setup | Phase 1/3
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 ▓░░░░░░░░░░░░░░░░░░░░░░░░ 10% · Detecting project...
 ```
@@ -297,7 +297,7 @@ Update progress to 100%.
 Output the final Keeper Block:
 ```
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-🔒 Keeper v1.3.0 | setup | ✅ Complete
+🔒 Keeper v1.3.1 | setup | ✅ Complete
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 {projectName} · {language}/{framework}

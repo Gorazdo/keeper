@@ -110,7 +110,7 @@ maxIterations = from args or config (default: 15)
 Output:
 ```
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-🔒 Keeper v1.3.0 | run | ⚙️ Session started
+🔒 Keeper v1.3.1 | run | ⚙️ Session started
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 {projectName} · {N} lenses active

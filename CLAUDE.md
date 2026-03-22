@@ -11,7 +11,7 @@ Autonomous repository hygiene agent. Scans, labels, untangles, and tends codebas
 ```
 keeper/
 ├── personality.md                   # Keeper voice, output format, principles
-├── .claude-plugin/plugin.json       # Plugin manifest v1.3.0
+├── .claude-plugin/plugin.json       # Plugin manifest v1.3.1
 ├── agents/
 │   ├── scanner.md                   # Unified multi-lens scanner (haiku)
 │   └── doer.md                      # Universal worker — all 12 lenses (model per lens)

@@ -21,7 +21,7 @@ Output the Keeper Block:
 
 ```
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-🔒 Keeper v1.3.0 | help | ❓ How It Works
+🔒 Keeper v1.3.1 | help | ❓ How It Works
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
         scan ──→ prioritize ──→ work ──→ PR

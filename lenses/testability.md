@@ -111,3 +111,42 @@ function sendNotification(userId: string, message: string) {
 // Can't call this in a test without SlackClient hitting the network.
 // No parameter to substitute a fake client.
 ```
+
+## Doer guidance
+
+When acting on scanner findings, apply these filters before writing tests.
+
+### What NOT to test
+
+- **Framework wrappers** — if the function delegates to a single framework/library call with no conditional logic, skip it. Testing it just tests the framework, not your code.
+- **Third-party library behavior** — pure glue around an external API belongs to integration or E2E, not unit tests.
+- **Already covered at a higher level** — if the function has no conditional logic of its own and is exercised by an integration or E2E test, deprioritize.
+
+### Test level selection
+
+Before adding a test, ask: *at what level should this be tested?*
+
+- **Unit** — logic can be isolated, no side effects, high cyclomatic complexity
+- **Integration** — persistence layer, service contracts, middleware/interceptor behavior
+- **Skip unit, rely on integration** — pure orchestration (call A, then B, then C with no branching)
+
+Check for duplicate coverage: is this function already tested at another level? Can a lower-level test cover it?
+
+### Framework type boundaries
+
+When the function under test is wrapped by a framework (React hooks, Express middleware, Next.js server actions), cast away the framework's type noise once at a test helper boundary. Don't fight the framework's type ceremony in every test case — test your logic at the layer you control.
+
+```typescript
+// BAD: fighting framework types in every test
+test('calculates total', () => {
+  const req = { body: { items: [...] } } as unknown as NextRequest;
+  const ctx = { params: { id: '1' } } as unknown as RouteContext;
+  const result = await handler(req, ctx); // framework noise everywhere
+});
+
+// GOOD: cast once at the boundary, test your logic directly
+const { calculateTotal } = extractLogic(handler);
+test('calculates total', () => {
+  expect(calculateTotal([item1, item2])).toBe(79.98);
+});
+```

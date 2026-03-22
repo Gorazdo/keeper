@@ -58,7 +58,7 @@ Skip to Step 6.5 (Housekeep) — still run housekeeping even with nothing to con
 Output:
 ```
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-🔒 Keeper v1.3.0 | sleep | 🌙 Consolidating
+🔒 Keeper v1.3.1 | sleep | 🌙 Consolidating
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 {N} pending entries to process.

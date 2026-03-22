@@ -9,7 +9,7 @@ Scans your codebase through **12 lenses**, creates small focused PRs while you s
 
 ```
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-🔒 Keeper v1.3.0 | setup | ✅ Complete
+🔒 Keeper v1.3.1 | setup | ✅ Complete
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 my-app · TypeScript/Next.js
@@ -31,14 +31,14 @@ Files created:
 
 ```
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-🔒 Keeper v1.3.0 | scan | 12 lenses active
+🔒 Keeper v1.3.1 | scan | 12 lenses active
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-🔧 untangling     3 functions · processOrder CC 24
-🧪 testability    2 exports without tests
+🔧 untangling      3 functions · processOrder CC 24
+🧪 testability     2 exports without tests
 ⚠️ error-handling  1 swallowed exception
 🏷️ labelling      14 files unlabelled
-📝 jsdoc          9 exports missing docs
+📝 jsdoc           9 exports missing docs
 
 Top priorities:
   1. processOrder — complexity 24 (threshold 10)
@@ -54,7 +54,7 @@ Top priorities:
 
 ```
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-🔒 Keeper v1.3.0 | run | 📊 Session Report
+🔒 Keeper v1.3.1 | run | 📊 Session Report
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 ✅ processOrder   — CC: 24→8   cov: 72%→86%

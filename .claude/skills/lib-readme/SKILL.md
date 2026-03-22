@@ -20,7 +20,7 @@ Follow the personality and output format from `personality.md`.
 Output:
 ```
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-🔒 Keeper v1.3.0 | lib:readme | 📄 Regenerating
+🔒 Keeper v1.3.1 | lib:readme | 📄 Regenerating
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 ▓░░░░░░░░░░░░░░░░░░░░░░░░ 0% · Reading sources...
 ```
@@ -152,7 +152,7 @@ Write the final README to `README.md`.
 
 ```
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-🔒 Keeper v1.3.0 | lib:readme | ✅ Done
+🔒 Keeper v1.3.1 | lib:readme | ✅ Done
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 README.md regenerated — {N} lines
