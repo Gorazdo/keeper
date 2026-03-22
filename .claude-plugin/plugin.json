@@ -7,6 +7,5 @@
   },
   "license": "MIT",
   "repository": "https://github.com/gorazdo/keeper",
-  "skills": "./skills",
-  "hooks": "./hooks/hooks.json"
+  "skills": "./skills"
 }
