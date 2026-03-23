@@ -5,11 +5,11 @@ Scans your codebase through **12 lenses**, creates small focused PRs while you s
 
 ## User Journey
 
-**1. Bootstrap** — `/keeper:setup`
+**1. Bootstrap** — `/keeper-setup`
 
 ```
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-🌿 Keeper v1.5.0 | setup | ✅ Complete
+🌿 Keeper v1.5.1 | setup | ✅ Complete
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 my-app · TypeScript/Next.js
@@ -24,15 +24,15 @@ Files created:
   _keeper/encyclopedia/   long-term memory (5 articles)
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-↘️ [S] Scan now · [?] /keeper:help
+↘️ [S] Scan now · [?] /keeper-help
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 ```
 
-**2. Health check** — `/keeper:scan`
+**2. Health check** — `/keeper-scan`
 
 ```
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-🌿 Keeper v1.5.0 | scan | 12 lenses active
+🌿 Keeper v1.5.1 | scan | 12 lenses active
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 🔧 untangling      3 functions · processOrder CC 24
@@ -47,15 +47,15 @@ Top priorities:
   3. src/api/ — 14 files need category headers
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-↘️ [C] Calibrate · [R] Run · [D] Details · [?] /keeper:help
+↘️ [C] Calibrate · [R] Run · [D] Details · [?] /keeper-help
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 ```
 
-**3. Autonomous loop** — `/keeper:run`
+**3. Autonomous loop** — `/keeper-run`
 
 ```
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-🌿 Keeper v1.5.0 | run | 📊 Session Report
+🌿 Keeper v1.5.1 | run | 📊 Session Report
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 ✅ processOrder   — CC: 24→8   cov: 72%→86%
@@ -67,7 +67,7 @@ PRs created: 2 · Commits: 7
 Lenses worked: untangling, labelling
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-↘️ [S] Sleep · [L] Loop · [?] /keeper:help
+↘️ [S] Sleep · [L] Loop · [?] /keeper-help
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 ```
 
@@ -94,13 +94,13 @@ Lenses worked: untangling, labelling
 ## Skills
 
 ```
-/keeper:setup      Bootstrap config, detect stack, approve command toolbox
-/keeper:scan       Read-only health report across active lenses
-/keeper:calibrate  Teach keeper your preferences (header format, refactoring style)
-/keeper:run        Autonomous loop — scan → pick → fix → PR → repeat
-/keeper:sleep      Consolidate learnings into long-term memory
-/keeper:loop       Set up recurring runs with /loop or tmux
-/keeper:help       Visual overview + interactive Q&A
+/keeper-setup      Bootstrap config, detect stack, approve command toolbox
+/keeper-scan       Read-only health report across active lenses
+/keeper-calibrate  Teach keeper your preferences (header format, refactoring style)
+/keeper-run        Autonomous loop — scan → pick → fix → PR → repeat
+/keeper-sleep      Consolidate learnings into long-term memory
+/keeper-loop       Set up recurring runs with /loop or tmux
+/keeper-help       Visual overview + interactive Q&A
 ```
 
 ## Memory

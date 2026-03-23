@@ -1,5 +1,5 @@
 ---
-name: help
+name: keeper-help
 description: ❓ Brief visual overview of how keeper works, plus interactive Q&A. Use this skill when the user asks how keeper works, what keeper does, what lenses are, how to use keeper, or any question about keeper's features, modes, commands, memory model, or architecture. Also triggers on "explain keeper", "what is keeper", or "help with keeper".
 user-invokable: true
 disable-model-invocation: false
@@ -72,7 +72,7 @@ Use AskUserQuestion:
   - **Lenses** — "The 12 analysis dimensions (8 code, 4 docs)"
   - **Memory** — "4 memory layers — working, short-term, long-term, procedural"
   - **Modes** — "Supervised, daemon, and nudge modes"
-  - **Workflows** — "Available workflow templates for /keeper:loop"
+  - **Workflows** — "Available workflow templates for /keeper-loop"
 
 ### Answering
 
@@ -84,8 +84,8 @@ For each question:
    - Modes → read `personality.md` (invocation context section)
    - Workflows → read `workflows/*.md` frontmatter, list available templates with name, description, lenses, cadence. Also check `_keeper/workflows/*.md` for custom workflows.
    - Agents → read `agents/scanner.md` and `agents/doer.md` descriptions
-   - PRs → read `skills/run/SKILL.md` Step 5 and Step 0.5
-   - Skills → read the relevant `skills/*/SKILL.md` description line
+   - PRs → read `skills/keeper-run/SKILL.md` Step 5 and Step 0.5
+   - Skills → read the relevant `skills/keeper-*/SKILL.md` description line
    - Config → read `.keeperrc.json` if it exists
    - Nudge → explain the two-hook pipeline (PostToolUse → triage → UserPromptSubmit → inject)
    - Custom question → grep/read whatever is relevant
@@ -121,10 +121,10 @@ Model per lens: haiku for simple work, sonnet for reasoning.
 🌿 Keeper | help | 📡 Modes
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-Supervised  — you run /keeper:run in Claude Code.
+Supervised  — you run /keeper-run in Claude Code.
               Keeper asks before acting. You approve PRs.
 
-Daemon      — set up recurring runs via /keeper:loop.
+Daemon      — set up recurring runs via /keeper-loop.
               Keeper works headless. Auto-creates PRs.
               Respects schedule + PR backpressure.
 

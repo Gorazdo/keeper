@@ -1,7 +1,7 @@
 {
   "name": "keeper",
   "description": "Autonomous repository hygiene agent — scans, labels, untangles, and tends your codebase with brain-inspired memory and sleep cycles. Everything is a lens.",
-  "version": "1.5.0",
+  "version": "1.5.1",
   "author": {
     "name": "gorazdo"
   },

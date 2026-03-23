@@ -1,5 +1,5 @@
 ---
-name: scan
+name: keeper-scan
 description: 👀 Quick read-only health report across all active lenses — code complexity, labelling, docs coverage. Use this skill when the user asks about codebase health, wants a status check, or asks what needs attention. Also triggers when the user asks to analyze, audit, or check their code.
 user-invokable: true
 disable-model-invocation: false
@@ -30,7 +30,7 @@ Load `.keeperrc.json` at project root. If missing, output error:
 🌿 Keeper | scan | ⚠️ Not set up
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-Run /keeper:setup first to bootstrap config.
+Run /keeper-setup first to bootstrap config.
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 ```
@@ -90,7 +90,7 @@ Top priorities:
 3. {lens}: {description}
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-↘️ [C] Calibrate · [R] Run · [D] Details · [?] /keeper:help
+↘️ [C] Calibrate · [R] Run · [D] Details · [?] /keeper-help
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 ```
 
@@ -122,7 +122,7 @@ No issues found across {N} active lenses.
 {files scanned} files · {functions analyzed} functions
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-↘️ [C] Calibrate · [R] Run · [?] /keeper:help
+↘️ [C] Calibrate · [R] Run · [?] /keeper-help
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 ```
 
@@ -154,7 +154,7 @@ Remove lock file: `rm -f _keeper/.lock`
 
 | User says | Action |
 |-----------|--------|
-| `C` / `calibrate` | Suggest: `/keeper:calibrate` — teach keeper your preferences |
-| `R` / `run` | Suggest: `/keeper:run` — calibrates lenses on first use |
+| `C` / `calibrate` | Suggest: `/keeper-calibrate` — teach keeper your preferences |
+| `R` / `run` | Suggest: `/keeper-run` — calibrates lenses on first use |
 | `D` / `details` | Show full scanner output (all findings detail) |
-| `?` / `help` | Suggest: `/keeper:help` |
+| `?` / `help` | Suggest: `/keeper-help` |

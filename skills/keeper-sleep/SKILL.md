@@ -1,5 +1,5 @@
 ---
-name: sleep
+name: keeper-sleep
 description: 🧬 Memory consolidation — promote proven patterns to encyclopedia, prune short-term memory, enforce directory structure, generate morning briefing. Runs during sleeping hours or on demand.
 user-invokable: true
 disable-model-invocation: true
@@ -24,7 +24,7 @@ Read `.keeperrc.json` and `_keeper/memory.json`. If either is missing:
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 🌿 Keeper | sleep | ⚠️ Not set up
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-Run /keeper:setup first.
+Run /keeper-setup first.
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 ```
 STOP.
@@ -403,7 +403,7 @@ Encyclopedia updated:
 
 Briefing: _keeper/briefing.md
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-↘️ [R] Run · [?] /keeper:help
+↘️ [R] Run · [?] /keeper-help
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 ```
 

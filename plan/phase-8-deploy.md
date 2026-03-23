@@ -28,7 +28,7 @@ Interactive setup for autonomous background running.
 
    tmux new-session -d -s "$SESSION_NAME" -c "$PROJECT_DIR"
    tmux send-keys -t "$SESSION_NAME" \
-     "claude --plugin-dir /path/to/keeper -p '/keeper:run'" Enter
+     "claude --plugin-dir /path/to/keeper -p '/keeper-run'" Enter
 
    echo "Keeper daemon started in tmux session: $SESSION_NAME"
    echo "Attach: tmux attach -t $SESSION_NAME"

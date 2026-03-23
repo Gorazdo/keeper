@@ -1,5 +1,5 @@
 ---
-name: calibrate
+name: keeper-calibrate
 description: 🎯 Teach keeper your preferences — header format, categories, refactoring style. Calibrates all uncalibrated lenses or a specific one. Use when the user wants to calibrate, recalibrate, teach preferences, or customize how keeper works on their code.
 user-invokable: true
 disable-model-invocation: false
@@ -24,7 +24,7 @@ Read `.keeperrc.json` and `_keeper/memory.json`. If either is missing:
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 🌿 Keeper | calibrate | ⚠️ Not set up
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-Run /keeper:setup first.
+Run /keeper-setup first.
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 ```
 STOP.
@@ -59,7 +59,7 @@ If nothing to calibrate:
 All active lenses are already calibrated.
 Use --recalibrate to re-teach preferences.
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-↘️ [R] Run · [?] /keeper:help
+↘️ [R] Run · [?] /keeper-help
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 ```
 STOP.
@@ -156,7 +156,7 @@ Output:
 ✅ {lens} — {summary of choices}
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-↘️ [R] Run · [L] Loop · [?] /keeper:help
+↘️ [R] Run · [L] Loop · [?] /keeper-help
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 ```
 

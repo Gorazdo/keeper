@@ -1,5 +1,5 @@
 ---
-name: loop
+name: keeper-loop
 description: ⏩ Set up recurring keeper runs — pick or create a workflow, get /loop and tmux commands. Use this skill when the user wants to run keeper on a schedule, in the background, loop keeper, or configure autonomous mode.
 user-invokable: true
 disable-model-invocation: true
@@ -24,7 +24,7 @@ Read `.keeperrc.json`. If missing:
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 🌿 Keeper | loop | ⚠️ Not set up
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-Run /keeper:setup first.
+Run /keeper-setup first.
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 ```
 STOP.
@@ -139,19 +139,19 @@ PR:      {create only | review by @{reviewer} | auto-merge ({strategy})}
 
 ▸ Start with /loop:
 
-    /loop {cadence} /keeper:run --workflow {name}
+    /loop {cadence} /keeper-run --workflow {name}
 
 ▸ Headless alternative (tmux):
 
     tmux new-session -d -s keeper-{name} -c {project-path} \
-      "while true; do claude -p '/keeper:run --workflow {name}'; sleep {seconds}; done"
+      "while true; do claude -p '/keeper-run --workflow {name}'; sleep {seconds}; done"
 
     Check:  tmux has-session -t keeper-{name} 2>/dev/null && echo running || echo stopped
     Stop:   tmux kill-session -t keeper-{name}
     Attach: tmux attach -t keeper-{name}
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-↘️ [?] /keeper:help
+↘️ [?] /keeper-help
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 ```
 

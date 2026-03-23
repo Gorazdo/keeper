@@ -1,5 +1,5 @@
 ---
-name: run
+name: keeper-run
 description: ▶️ Autonomous work loop — scan across lenses, pick highest-priority targets, dispatch to agents, create focused PRs. Designed for /loop and tmux integration.
 user-invokable: true
 disable-model-invocation: false
@@ -24,7 +24,7 @@ Read `.keeperrc.json` at project root. If missing:
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 🌿 Keeper | run | ⚠️ Not set up
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-Run /keeper:setup first.
+Run /keeper-setup first.
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 ```
 STOP.
@@ -91,7 +91,7 @@ Check `_keeper/memory.json` for uncalibrated lenses (where `calibratedOn` is nul
 If uncalibrated lenses exist:
 - **Supervised mode:** Use AskUserQuestion:
   - "Some lenses haven't been calibrated yet ({list}). Calibrate now?"
-    - **Calibrate** — run `/keeper:calibrate` for uncalibrated lenses, then continue
+    - **Calibrate** — run `/keeper-calibrate` for uncalibrated lenses, then continue
     - **Skip** — proceed with defaults, calibrate later
 - **Autonomous/repeating mode:** skip calibration, use defaults.
 
@@ -435,7 +435,7 @@ Keep bounded:
 
 If `schedule.workingHours` is configured:
 - Get current time in configured timezone
-- If outside working hours → go to sleep: run `/keeper:sleep` logic, then PAUSE
+- If outside working hours → go to sleep: run `/keeper-sleep` logic, then PAUSE
 
 ---
 
@@ -486,7 +486,7 @@ Lenses worked: {list}
 
 Memory updated: _keeper/memory.json
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-↘️ [S] Sleep · [L] Loop · [?] /keeper:help
+↘️ [S] Sleep · [L] Loop · [?] /keeper-help
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 ```
 

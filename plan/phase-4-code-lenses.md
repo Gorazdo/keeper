@@ -30,7 +30,7 @@ Works on ONE function continuously until targets met or stalled:
 - Opus stalls → mark for human review
 
 ### Progressive Calibration (untangling lens)
-On first use of any code lens via `/keeper:run`:
+On first use of any code lens via `/keeper-run`:
 1. Choose active code lenses (AskUserQuestion multi-select)
 2. Present 7 refactoring proposals as diffs (scanner finds candidates, doer proposes)
 3. User rates: Approve / Reject / Different strategy / Comment

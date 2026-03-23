@@ -8,7 +8,7 @@
 
 ## Sleep Consolidation
 
-Brain-inspired memory consolidation. Runs during sleeping hours (automatic in tmux mode) or on demand via `/keeper:sleep`.
+Brain-inspired memory consolidation. Runs during sleeping hours (automatic in tmux mode) or on demand via `/keeper-sleep`.
 
 ### 6-Step Cycle
 
@@ -59,7 +59,7 @@ Brain-inspired memory consolidation. Runs during sleeping hours (automatic in tm
 
 ### Automatic Trigger (tmux mode)
 
-In `/keeper:run` via tmux:
+In `/keeper-run` via tmux:
 1. After each work cycle, check current time against `schedule.workingHours`
 2. If outside working hours → run sleep consolidation → pause
 3. On next working hour → load briefing → resume with planned targets

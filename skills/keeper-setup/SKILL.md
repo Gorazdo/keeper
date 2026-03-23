@@ -1,5 +1,5 @@
 ---
-name: setup
+name: keeper-setup
 description: ⚙️ Bootstrap keeper in your project — detect stack, create config and memory files. Use this skill when the user wants to set up keeper, configure it for a new project, reconfigure an existing setup, or recalibrate keeper settings including nudge behavior.
 user-invokable: true
 disable-model-invocation: true
@@ -219,7 +219,7 @@ Heritage, moments, and project evolution.
 ```markdown
 # Morning Briefing
 
-No briefing yet. Run `/keeper:run` to start working, then `/keeper:sleep` to consolidate learnings.
+No briefing yet. Run `/keeper-run` to start working, then `/keeper-sleep` to consolidate learnings.
 ```
 
 ---
@@ -400,13 +400,13 @@ Files created:
 
 Getting started:
   ✅ setup
-  → /keeper:scan       See what needs attention
-  → /keeper:calibrate  Teach keeper your preferences
-  → /keeper:run        Start working
-  → /keeper:loop     Set up recurring runs
+  → /keeper-scan       See what needs attention
+  → /keeper-calibrate  Teach keeper your preferences
+  → /keeper-run        Start working
+  → /keeper-loop     Set up recurring runs
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-↘️ [S] Scan now · [?] /keeper:help
+↘️ [S] Scan now · [?] /keeper-help
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 ```
 

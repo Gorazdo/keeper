@@ -1,5 +1,5 @@
 ---
-name: complexity-scorer
+name: keeper-complexity-scorer
 description: 📊 Score cognitive complexity of TypeScript/JavaScript functions using the SonarQube algorithm. Use when analyzing function complexity, ranking functions by complexity score, or when eslint-plugin-sonarjs is not available in the project. Triggers when the user asks to score, measure, or analyze function complexity.
 user-invokable: true
 disable-model-invocation: false

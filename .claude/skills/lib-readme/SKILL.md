@@ -27,9 +27,9 @@ Output:
 
 Read in parallel:
 1. `personality.md` — output format, emoji maps, block structure
-2. `skills/setup/SKILL.md` — setup output format
-3. `skills/scan/SKILL.md` — scan output format
-4. `skills/run/SKILL.md` — run session report format
+2. `skills/keeper-setup/SKILL.md` — setup output format
+3. `skills/keeper-scan/SKILL.md` — scan output format
+4. `skills/keeper-run/SKILL.md` — run session report format
 5. `lenses/*.md` — all lens files (for the lens table)
 6. `README.md` — current README as base
 7. `.claude-plugin/plugin.json` — version number
@@ -38,12 +38,12 @@ Read in parallel:
 
 ## Step 1: Capture Setup Output
 
-Spawn a subagent to run `/keeper:setup` against this repo (the keeper plugin repo itself). The agent should:
+Spawn a subagent to run `/keeper-setup` against this repo (the keeper plugin repo itself). The agent should:
 - Run setup in the keeper repo directory
 - Capture the final setup output block
 - Extract: project detection, lenses activated, files created
 
-If setup cannot run (no target project context), synthesize a representative setup block using the format from `skills/setup/SKILL.md` and real data from the keeper repo structure.
+If setup cannot run (no target project context), synthesize a representative setup block using the format from `skills/keeper-setup/SKILL.md` and real data from the keeper repo structure.
 
 ```
 ▓▓▓▓▓▓▓▓░░░░░░░░░░░░░░░░ 33% · Setup output captured
@@ -53,11 +53,11 @@ If setup cannot run (no target project context), synthesize a representative set
 
 ## Step 2: Capture Scan Output
 
-Spawn a subagent to run `/keeper:scan` against this repo. The agent should:
+Spawn a subagent to run `/keeper-scan` against this repo. The agent should:
 - Run scan and capture the output block
 - Extract: per-lens findings with emoji, top priorities
 
-If scan cannot run, synthesize a representative scan block using the format from `skills/scan/SKILL.md` with realistic findings based on actually scanning the keeper repo's own code.
+If scan cannot run, synthesize a representative scan block using the format from `skills/keeper-scan/SKILL.md` with realistic findings based on actually scanning the keeper repo's own code.
 
 ```
 ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓░░░░░░░░ 66% · Scan output captured
@@ -79,19 +79,19 @@ Using the captured outputs, regenerate `README.md` with this exact structure. Ta
 
 ## User Journey
 
-**1. Bootstrap** — `/keeper:setup`
+**1. Bootstrap** — `/keeper-setup`
 
 ```
 {Captured/synthesized setup output block — compact, ~10 lines}
 ```
 
-**2. Health check** — `/keeper:scan`
+**2. Health check** — `/keeper-scan`
 
 ```
 {Captured/synthesized scan output block — compact, ~12 lines}
 ```
 
-**3. Autonomous loop** — `/keeper:run`
+**3. Autonomous loop** — `/keeper-run`
 
 ```
 {Session report block from run.md format — show before/after metrics, PRs created, ~10 lines}
@@ -105,13 +105,13 @@ Using the captured outputs, regenerate `README.md` with this exact structure. Ta
 ## Skills
 
 ```
-/keeper:setup      Bootstrap config, detect stack, create memory files
-/keeper:scan       Read-only health report across active lenses
-/keeper:calibrate  Teach keeper your preferences (header format, refactoring style)
-/keeper:run        Autonomous loop — scan → pick → fix → PR → repeat
-/keeper:sleep      Consolidate learnings into long-term memory
-/keeper:loop       Set up recurring runs with /loop or tmux
-/keeper:help       Visual overview + interactive Q&A
+/keeper-setup      Bootstrap config, detect stack, create memory files
+/keeper-scan       Read-only health report across active lenses
+/keeper-calibrate  Teach keeper your preferences (header format, refactoring style)
+/keeper-run        Autonomous loop — scan → pick → fix → PR → repeat
+/keeper-sleep      Consolidate learnings into long-term memory
+/keeper-loop       Set up recurring runs with /loop or tmux
+/keeper-help       Visual overview + interactive Q&A
 ```
 
 ## Memory
