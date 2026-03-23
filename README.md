@@ -9,25 +9,19 @@ Scans your codebase through **12 lenses**, creates small focused PRs while you s
 
 ```
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-🌿 Keeper v1.4.0 | setup | ✅ Complete
+🌿 Keeper v1.5.0 | setup | ✅ Complete
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 my-app · TypeScript/Next.js
 12 lenses active · test runner: vitest
 Nudge: enabled (30 min cooldown)
+Toolbox: 5 tiers approved (observe, keeper-state, git-write, github, test-runner)
 
 Files created:
-  .keeperrc.json          config
+  .keeperrc.json          config + toolbox approvals
+  .claude/settings.json   command permissions
   _keeper/memory.json     short-term memory
   _keeper/encyclopedia/   long-term memory (5 articles)
-  _keeper/briefing.md     morning briefing
-
-Getting started:
-  ✅ setup
-  → /keeper:scan       See what needs attention
-  → /keeper:calibrate  Teach keeper your preferences
-  → /keeper:run        Start working
-  → /keeper:loop       Set up recurring runs
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 ↘️ [S] Scan now · [?] /keeper:help
@@ -38,7 +32,7 @@ Getting started:
 
 ```
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-🌿 Keeper v1.4.0 | scan | 12 lenses active
+🌿 Keeper v1.5.0 | scan | 12 lenses active
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 🔧 untangling      3 functions · processOrder CC 24
@@ -61,7 +55,7 @@ Top priorities:
 
 ```
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-🌿 Keeper v1.4.0 | run | 📊 Session Report
+🌿 Keeper v1.5.0 | run | 📊 Session Report
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 ✅ processOrder   — CC: 24→8   cov: 72%→86%
@@ -100,7 +94,7 @@ Lenses worked: untangling, labelling
 ## Skills
 
 ```
-/keeper:setup      Bootstrap config, detect stack, create memory files
+/keeper:setup      Bootstrap config, detect stack, approve command toolbox
 /keeper:scan       Read-only health report across active lenses
 /keeper:calibrate  Teach keeper your preferences (header format, refactoring style)
 /keeper:run        Autonomous loop — scan → pick → fix → PR → repeat
@@ -113,7 +107,7 @@ Lenses worked: untangling, labelling
 
 - **Short-term** `_keeper/memory.json` — session results, pending consolidation
 - **Long-term** `_keeper/encyclopedia/` — proven patterns, promoted during sleep
-- **Procedural** `.keeperrc.json` — calibrated preferences and thresholds
+- **Procedural** `.keeperrc.json` — calibrated preferences, thresholds, toolbox approvals
 
 Sleep consolidation promotes learnings to encyclopedia, prunes noise, and writes a morning briefing.
 

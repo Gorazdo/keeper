@@ -19,6 +19,10 @@ The run command provides you with:
 - Project conventions (from CLAUDE.md, eslint config)
 - Memory (learnings from past sessions — patterns, techniques, gotchas)
 - Model context (first attempt on sonnet, or escalation with opus + stall context)
+- **Approved command tiers** — from `.keeperrc.json` `toolbox.approvedTiers`. Adapt your workflow:
+  - No `test-runner` → skip COVER phase entirely, skip test gate in UNTANGLE backpressure. Warn in report.
+  - No `git-write` → do NOT run `git add` or `git commit`. Accumulate changes — the orchestrator handles git.
+  - Use only commands from approved tiers. Commands outside approved tiers will prompt the user — avoid them in autonomous/daemon mode.
 
 ## Your Loop
 

@@ -1,0 +1,87 @@
+{
+  "version": "1.0",
+  "description": "Keeper command toolbox — predefined tiers of shell commands. Approved during setup, written to .claude/settings.json for prompt-free execution.",
+  "tiers": {
+    "observe": {
+      "description": "Read-only commands — file search, git status, content inspection",
+      "risk": "none",
+      "required": true,
+      "commands": [
+        "Bash(grep *)",
+        "Bash(find *)",
+        "Bash(cat *)",
+        "Bash(ls *)",
+        "Bash(wc *)",
+        "Bash(head *)",
+        "Bash(tail *)",
+        "Bash(date *)",
+        "Bash(git log *)",
+        "Bash(git diff *)",
+        "Bash(git status *)",
+        "Bash(git branch *)",
+        "Bash(command -v *)"
+      ],
+      "usedBy": ["scanner", "doer", "run", "scan", "sleep", "setup", "calibrate", "nudge"]
+    },
+    "keeper-state": {
+      "description": "Keeper's own files — lock files, nudge queue, directory creation",
+      "risk": "low",
+      "required": true,
+      "commands": [
+        "Bash(date * > _keeper/.lock)",
+        "Bash(echo * >> _keeper/nudge-queue.txt)",
+        "Bash(mv _keeper/nudge-queue.txt *)",
+        "Bash(rm -f _keeper/.lock)",
+        "Bash(rm -f _keeper/nudge-queue.txt*)",
+        "Bash(mkdir -p _keeper/*)"
+      ],
+      "usedBy": ["run", "scan", "sleep", "setup", "nudge"]
+    },
+    "git-write": {
+      "description": "Git mutations — branch, stage, commit, push",
+      "risk": "medium",
+      "required": false,
+      "commands": [
+        "Bash(git add *)",
+        "Bash(git commit *)",
+        "Bash(git checkout -b keeper/*)",
+        "Bash(git checkout *)",
+        "Bash(git push *)"
+      ],
+      "usedBy": ["doer", "run"]
+    },
+    "github": {
+      "description": "GitHub CLI — PR creation, review, merge",
+      "risk": "medium",
+      "required": false,
+      "commands": [
+        "Bash(gh pr list *)",
+        "Bash(gh pr create *)",
+        "Bash(gh pr edit *)",
+        "Bash(gh pr merge *)",
+        "Bash(gh pr checks *)",
+        "Bash(gh pr view *)"
+      ],
+      "usedBy": ["run"]
+    },
+    "test-runner": {
+      "description": "Project test suite — vitest, jest, npm test",
+      "risk": "medium",
+      "required": false,
+      "commands": [
+        "Bash(npx vitest *)",
+        "Bash(npx jest *)",
+        "Bash(npm test *)",
+        "Bash(npm run test *)"
+      ],
+      "usedBy": ["doer", "run"]
+    }
+  },
+  "deny": [
+    "Bash(rm -rf *)",
+    "Bash(git push --force *)",
+    "Bash(git reset --hard *)",
+    "Bash(npm install *)",
+    "Bash(pip install *)"
+  ]
+}

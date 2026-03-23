@@ -32,7 +32,7 @@ Follow the personality and output format from `personality.md`. Every response u
 Output the Keeper Block header:
 ```
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-🌿 Keeper v{version} | setup | Phase 1/3
+🌿 Keeper v{version} | setup | Phase 1/4
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 ▓░░░░░░░░░░░░░░░░░░░░░░░░ 10% · Detecting project...
 ```
@@ -58,7 +58,7 @@ If any exist, offer migration:
   - **Merge** — "Import settings, then remove old files"
   - **Ignore** — "Start fresh, leave old files alone"
 
-If merging, extract relevant settings (test runner, categories, style preferences, etc.) and apply them in Phase 3.
+If merging, extract relevant settings (test runner, categories, style preferences, etc.) and apply them in Phase 2.
 
 ### 1c. Auto-detect project
 
@@ -96,11 +96,11 @@ Show a brief summary of what was detected.
 
 ---
 
-## Phase 2: Create Config (~50%)
+## Phase 2: Create Config (~40%)
 
 Update progress:
 ```
-▓▓▓▓▓▓▓▓▓▓▓▓░░░░░░░░░░░░ 50% · Writing config...
+▓▓▓▓▓▓▓▓▓▓░░░░░░░░░░░░░░ 40% · Writing config...
 ```
 
 All 12 lenses are activated by default. Lens filtering happens at run time (`--lens` flag) and loop time (workflow schedule). Setup does not ask which lenses to use.
@@ -224,14 +224,96 @@ No briefing yet. Run `/keeper:run` to start working, then `/keeper:sleep` to con
 
 ---
 
-## Phase 3: Finalize (~90%)
+## Phase 3: Command Toolbox (~60%)
+
+Update progress:
+```
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+🌿 Keeper v{version} | setup | Phase 3/4
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓░░░░░░░░░ 60% · Command permissions...
+```
+
+Keeper agents run shell commands during work. This phase lets the user approve command tiers once, so keeper can work without prompting.
+
+### 3a. Load toolbox definition
+
+Read `toolbox.json` from the keeper plugin directory (resolved relative to the plugin install path, same as lens files).
+
+### 3b. Present tiers
+
+Use AskUserQuestion:
+- Question: "Keeper needs shell commands to work. Approve tiers so it can run without prompting."
+- Show required tiers as pre-approved:
+  ```
+  ✅ observe (required) — read-only: grep, find, git log/diff/status
+  ✅ keeper-state (required) — keeper files: lock, queue, mkdir _keeper/
+  ```
+- Options for optional tiers:
+  - **All (recommended for autonomous mode)** — approve git-write + github + test-runner
+  - **Git only** — approve git-write (manual PRs, no test running)
+  - **Git + tests** — approve git-write + test-runner (no GitHub CLI)
+  - **None** — keeper will prompt for each command (supervised only)
+
+### 3c. Custom commands (optional)
+
+Use AskUserQuestion:
+- Question: "Any additional commands keeper should use? (e.g., linters, AST tools)"
+- Options:
+  - **None** — done
+  - **Add custom** — enter patterns (example: `npx eslint *`, `npx ts-morph *`)
+
+If "Add custom": parse user input into `Bash(...)` patterns and add to `customAllow`.
+
+### 3d. Settings location
+
+Use AskUserQuestion:
+- Question: "Where should command permissions be saved?"
+- Options:
+  - **Project settings (recommended)** — `.claude/settings.json` (shared with team)
+  - **Local only** — `.claude/settings.local.json` (just for you)
+
+### 3e. Record and write permissions
+
+1. Update `.keeperrc.json` with toolbox section:
+```json
+{
+  "toolbox": {
+    "approvedTiers": ["observe", "keeper-state", "git-write", "github", "test-runner"],
+    "customAllow": [],
+    "customDeny": []
+  }
+}
+```
+
+2. Build permission lists:
+   - `allow` = all `commands` from approved tiers + `customAllow`
+   - `deny` = `toolbox.json` `deny` list + `customDeny`
+
+3. Write to the chosen settings file (`.claude/settings.json` or `.claude/settings.local.json`):
+```json
+{
+  "permissions": {
+    "allow": ["Bash(grep *)", "Bash(find *)", "...all from approved tiers..."],
+    "deny": ["Bash(rm -rf *)", "Bash(git push --force *)", "..."]
+  }
+}
+```
+
+**Merge behavior:** If the settings file already exists, read it first. Remove any patterns that match entries in `toolbox.json` (keeper "owns" those). Preserve all other user-added patterns. Then add current keeper patterns back.
+
+**On `--reconfigure`:** Re-read `toolbox.json` (may have new tiers from a keeper update), preserve `customAllow`/`customDeny` from existing `.keeperrc.json`, regenerate the settings file.
+
+---
+
+## Phase 4: Finalize (~90%)
 
 Update progress:
 ```
 ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓░░░ 90% · Finalizing...
 ```
 
-### 3a. Nudge configuration
+### 4a. Nudge configuration
 
 Use AskUserQuestion:
 - Question: "Enable nudge mode? Keeper watches your edits and runs quick lens checks on files you touch."
@@ -252,7 +334,7 @@ lenses=labelling|micro-hygiene|jsdoc
 
 This file avoids JSON parsing in the hook scripts. Regenerate it on `--reconfigure`.
 
-### 3b. PR lifecycle defaults
+### 4b. PR lifecycle defaults
 
 Use AskUserQuestion:
 - Question: "How should keeper handle PRs by default?"
@@ -279,7 +361,7 @@ Save to `.keeperrc.json` `pr` section:
 
 These defaults apply when running without a workflow. Workflows can override them.
 
-### 3c. Gitignore
+### 4c. Gitignore
 
 Use AskUserQuestion:
 - Question: "Add keeper files to .gitignore?"
@@ -290,7 +372,7 @@ Use AskUserQuestion:
 
 Apply choice to `.gitignore` (create if needed, append if exists).
 
-### 3d. Done
+### 4d. Done
 
 Update progress to 100%.
 
@@ -304,9 +386,11 @@ Output the final Keeper Block:
 12 lenses active (all)
 Test runner: {runner}
 Nudge: {enabled|disabled}
+Toolbox: {N} tiers approved ({tier names})
 
 Files created:
   .keeperrc.json
+  .claude/settings.json (or .local.json)
   _keeper/memory.json
   _keeper/output/supervised/
   _keeper/output/autonomous/

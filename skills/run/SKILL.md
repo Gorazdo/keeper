@@ -76,11 +76,13 @@ Check if running interactively (Claude Code) or autonomously (tmux/bash):
 
 Use AskUserQuestion ONCE:
 - "Branch strategy for this session?"
-  - **Create branch** — `keeper/session-{YYYY-MM-DD-HHmm}`
-  - **Current branch** — work on whatever's checked out
+  - **Create branch** — keeper will create per-lens branches before each work batch
+  - **Current branch** — work on whatever's checked out (all commits land here)
   - **Skip** — I'll handle git myself
 
-In autonomous mode: always create branch `keeper/session-{YYYY-MM-DD-HHmm}`.
+Record the choice as `gitStrategy` (`create-branch`, `current-branch`, or `skip`).
+
+In autonomous mode: always use `create-branch` strategy.
 
 ### 0g. Calibration check
 
@@ -97,7 +99,23 @@ If uncalibrated lenses exist:
 
 Run test command once to confirm it works. If fails: warn and disable code lenses for this session.
 
-### 0i. Initialize session
+### 0i. Load toolbox
+
+Read `.keeperrc.json` `toolbox.approvedTiers`. If `toolbox` section is missing, treat all tiers as unapproved (every Bash command will prompt).
+
+Check for missing optional tiers and degrade gracefully:
+
+| Missing Tier | Degradation |
+|---|---|
+| `git-write` | Force `gitStrategy` to `skip`. Doer makes changes but does not commit. Warn: "git-write tier not approved — commits disabled." |
+| `github` | Skip PR reconciliation (Step 0.5) and PR creation (Step 5). Warn: "github tier not approved — PRs disabled." |
+| `test-runner` | Skip test validation (Step 0h). Disable test backpressure gate in doer context. Warn: "test-runner tier not approved — test gates disabled." |
+
+Pass the `approvedTiers` list to doer prompts so the doer knows its constraints.
+
+Output warnings (if any) before session start block.
+
+### 0j. Initialize session
 
 ```
 outerIteration = 0
@@ -114,7 +132,8 @@ Output:
 {projectName} · {N} lenses active
 Thresholds: CC ≤ {T}, coverage ≥ {T}%
 Max iterations: {N}
-Branch: {branch}
+Git strategy: {gitStrategy}
+Toolbox: {N} tiers approved {warnings if any}
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 ```
@@ -240,6 +259,20 @@ Model indicators: `🟢 haiku` / `🟡 sonnet` / `🔴 opus` — read from the a
 
 ---
 
+## Step 3.5: BRANCH (before work)
+
+If `gitStrategy` is `create-branch`:
+
+```bash
+git checkout -b keeper/{lens}-{YYYY-MM-DD-HHmm}
+```
+
+This ensures the doer's commits land on an isolated per-lens branch, not on main. If the branch already exists (e.g., retrying after a stall), check it out instead of creating.
+
+If `gitStrategy` is `current-branch` or `skip`: no branch change — commits land on the current branch.
+
+---
+
 ## Step 4: WORK
 
 Dispatch to the lens's agent for a batch of targets (3-5 from the same lens).
@@ -307,12 +340,7 @@ Spawn doer with the doc lens context. The doer handles JSDoc, markdown, and docs
 
 Create a PR for the completed batch. One lens per PR.
 
-### Branch
-
-If not already on a feature branch:
-```bash
-git checkout -b keeper/{lens}-{YYYY-MM-DD-HHmm}
-```
+The branch was already created in Step 3.5 — commits from the doer are already on `keeper/{lens}-{YYYY-MM-DD-HHmm}`.
 
 ### Commit (if not already committed by doer)
 
