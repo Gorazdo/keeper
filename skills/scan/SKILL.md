@@ -1,6 +1,6 @@
 ---
 name: scan
-description: 🌿 Quick read-only health report across all active lenses — code complexity, labelling, docs coverage. Use this skill when the user asks about codebase health, wants a status check, or asks what needs attention. Also triggers when the user asks to analyze, audit, or check their code.
+description: 👀 Quick read-only health report across all active lenses — code complexity, labelling, docs coverage. Use this skill when the user asks about codebase health, wants a status check, or asks what needs attention. Also triggers when the user asks to analyze, audit, or check their code.
 user-invokable: true
 disable-model-invocation: false
 ---
@@ -90,7 +90,7 @@ Top priorities:
 3. {lens}: {description}
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-↘️ [R] Run · [D] Details · [X] Done
+↘️ [C] Calibrate · [R] Run · [D] Details · [?] /keeper:help
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 ```
 
@@ -122,7 +122,7 @@ No issues found across {N} active lenses.
 {files scanned} files · {functions analyzed} functions
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-↘️ [X] Done
+↘️ [C] Calibrate · [R] Run · [?] /keeper:help
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 ```
 
@@ -154,6 +154,7 @@ Remove lock file: `rm -f _keeper/.lock`
 
 | User says | Action |
 |-----------|--------|
-| `R` / `run` | Suggest: `/keeper:run` |
+| `C` / `calibrate` | Suggest: `/keeper:calibrate` — teach keeper your preferences |
+| `R` / `run` | Suggest: `/keeper:run` — calibrates lenses on first use |
 | `D` / `details` | Show full scanner output (all findings detail) |
-| `X` / `done` | Sign off |
+| `?` / `help` | Suggest: `/keeper:help` |

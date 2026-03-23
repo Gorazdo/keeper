@@ -1,6 +1,6 @@
 ---
 name: setup
-description: 🌿 Bootstrap keeper in your project — detect stack, create config and memory files. Use this skill when the user wants to set up keeper, configure it for a new project, reconfigure an existing setup, or recalibrate keeper settings including nudge behavior.
+description: ⚙️ Bootstrap keeper in your project — detect stack, create config and memory files. Use this skill when the user wants to set up keeper, configure it for a new project, reconfigure an existing setup, or recalibrate keeper settings including nudge behavior.
 user-invokable: true
 disable-model-invocation: true
 ---
@@ -103,7 +103,7 @@ Update progress:
 ▓▓▓▓▓▓▓▓▓▓▓▓░░░░░░░░░░░░ 50% · Writing config...
 ```
 
-All 12 lenses are activated by default. Lens filtering happens at run time (`--lens` flag) and deploy time (daemon schedule). Setup does not ask which lenses to use.
+All 12 lenses are activated by default. Lens filtering happens at run time (`--lens` flag) and loop time (workflow schedule). Setup does not ask which lenses to use.
 
 Write `.keeperrc.json`:
 ```json
@@ -314,10 +314,15 @@ Files created:
   _keeper/history.md
   _keeper/briefing.md
 
-Next: /keeper:scan to see what needs attention
+Getting started:
+  ✅ setup
+  → /keeper:scan       See what needs attention
+  → /keeper:calibrate  Teach keeper your preferences
+  → /keeper:run        Start working
+  → /keeper:loop     Set up recurring runs
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-↘️ [S] Scan now · [X] Done
+↘️ [S] Scan now · [?] /keeper:help
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 ```
 

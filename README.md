@@ -9,7 +9,7 @@ Scans your codebase through **12 lenses**, creates small focused PRs while you s
 
 ```
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-🌿 Keeper v1.3.1 | setup | ✅ Complete
+🌿 Keeper v1.4.0 | setup | ✅ Complete
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 my-app · TypeScript/Next.js
@@ -22,8 +22,15 @@ Files created:
   _keeper/encyclopedia/   long-term memory (5 articles)
   _keeper/briefing.md     morning briefing
 
+Getting started:
+  ✅ setup
+  → /keeper:scan       See what needs attention
+  → /keeper:calibrate  Teach keeper your preferences
+  → /keeper:run        Start working
+  → /keeper:loop       Set up recurring runs
+
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-↘️ [S] Scan now · [X] Done
+↘️ [S] Scan now · [?] /keeper:help
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 ```
 
@@ -31,7 +38,7 @@ Files created:
 
 ```
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-🌿 Keeper v1.3.1 | scan | 12 lenses active
+🌿 Keeper v1.4.0 | scan | 12 lenses active
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 🔧 untangling      3 functions · processOrder CC 24
@@ -46,7 +53,7 @@ Top priorities:
   3. src/api/ — 14 files need category headers
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-↘️ [R] Run · [D] Details · [X] Done
+↘️ [C] Calibrate · [R] Run · [D] Details · [?] /keeper:help
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 ```
 
@@ -54,7 +61,7 @@ Top priorities:
 
 ```
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-🌿 Keeper v1.3.1 | run | 📊 Session Report
+🌿 Keeper v1.4.0 | run | 📊 Session Report
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 ✅ processOrder   — CC: 24→8   cov: 72%→86%
@@ -65,6 +72,8 @@ Top priorities:
 PRs created: 2 · Commits: 7
 Lenses worked: untangling, labelling
 
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+↘️ [S] Sleep · [L] Loop · [?] /keeper:help
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 ```
 
@@ -91,12 +100,13 @@ Lenses worked: untangling, labelling
 ## Skills
 
 ```
-/keeper:setup    Bootstrap config, detect stack, create memory files
-/keeper:scan     Read-only health report across active lenses
-/keeper:run      Autonomous loop — scan → pick → fix → PR → repeat
-/keeper:sleep    Consolidate learnings into long-term memory
-/keeper:deploy   Generate tmux script for background daemon
-/keeper:help     Visual overview + interactive Q&A
+/keeper:setup      Bootstrap config, detect stack, create memory files
+/keeper:scan       Read-only health report across active lenses
+/keeper:calibrate  Teach keeper your preferences (header format, refactoring style)
+/keeper:run        Autonomous loop — scan → pick → fix → PR → repeat
+/keeper:sleep      Consolidate learnings into long-term memory
+/keeper:loop       Set up recurring runs with /loop or tmux
+/keeper:help       Visual overview + interactive Q&A
 ```
 
 ## Memory

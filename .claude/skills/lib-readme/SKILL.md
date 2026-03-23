@@ -105,12 +105,13 @@ Using the captured outputs, regenerate `README.md` with this exact structure. Ta
 ## Skills
 
 ```
-/keeper:setup    Bootstrap config, detect stack, create memory files
-/keeper:scan     Read-only health report across active lenses
-/keeper:run      Autonomous loop — scan → pick → fix → PR → repeat
-/keeper:sleep    Consolidate learnings into long-term memory
-/keeper:deploy   Generate tmux script for background daemon
-/keeper:help     Visual overview + interactive Q&A
+/keeper:setup      Bootstrap config, detect stack, create memory files
+/keeper:scan       Read-only health report across active lenses
+/keeper:calibrate  Teach keeper your preferences (header format, refactoring style)
+/keeper:run        Autonomous loop — scan → pick → fix → PR → repeat
+/keeper:sleep      Consolidate learnings into long-term memory
+/keeper:loop       Set up recurring runs with /loop or tmux
+/keeper:help       Visual overview + interactive Q&A
 ```
 
 ## Memory

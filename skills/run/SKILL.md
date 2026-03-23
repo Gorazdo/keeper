@@ -1,8 +1,8 @@
 ---
 name: run
-description: 🌿 Autonomous work loop — scan across lenses, pick highest-priority targets, dispatch to agents, create focused PRs. Designed for /loop and tmux integration.
+description: ▶️ Autonomous work loop — scan across lenses, pick highest-priority targets, dispatch to agents, create focused PRs. Designed for /loop and tmux integration.
 user-invokable: true
-disable-model-invocation: true
+disable-model-invocation: false
 ---
 
 # Keeper Run — Autonomous Loop
@@ -82,18 +82,16 @@ Use AskUserQuestion ONCE:
 
 In autonomous mode: always create branch `keeper/session-{YYYY-MM-DD-HHmm}`.
 
-### 0g. Progressive calibration check
+### 0g. Calibration check
 
-For each active lens, check if calibration is needed:
-- **labelling**: if `calibration.labelling.calibratedOn` is null → run labelling calibration (see `lenses/labelling.md` "Progressive calibration" section)
-- **untangling** (or any code lens): if `calibration.untangling.calibratedOn` is null → run untangling calibration:
-  1. Scan for 7 functions above complexity threshold
-  2. For each, show a one-line refactoring proposal (e.g., "extract guard clause", "split into helper")
-  3. Ask user to approve/reject/modify each proposal via AskUserQuestion
-  4. Record approved style preferences to `calibration.untangling.stylePreferences[]`
-  5. Set `calibration.untangling.calibratedOn` to current date
+Check `_keeper/memory.json` for uncalibrated lenses (where `calibratedOn` is null).
 
-In autonomous mode: skip calibration, use defaults.
+If uncalibrated lenses exist:
+- **Supervised mode:** Use AskUserQuestion:
+  - "Some lenses haven't been calibrated yet ({list}). Calibrate now?"
+    - **Calibrate** — run `/keeper:calibrate` for uncalibrated lenses, then continue
+    - **Skip** — proceed with defaults, calibrate later
+- **Autonomous/repeating mode:** skip calibration, use defaults.
 
 ### 0h. Validate test runner (if code lenses active)
 
@@ -459,6 +457,8 @@ Lenses worked: {list}
 🔄 {N} extracted helper(s) — candidates for shared utility
 
 Memory updated: _keeper/memory.json
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+↘️ [S] Sleep · [L] Loop · [?] /keeper:help
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 ```
 

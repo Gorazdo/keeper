@@ -1,6 +1,6 @@
 ---
 name: help
-description: 🌿 Brief visual overview of how keeper works, plus interactive Q&A. Use this skill when the user asks how keeper works, what keeper does, what lenses are, how to use keeper, or any question about keeper's features, modes, commands, memory model, or architecture. Also triggers on "explain keeper", "what is keeper", or "help with keeper".
+description: ❓ Brief visual overview of how keeper works, plus interactive Q&A. Use this skill when the user asks how keeper works, what keeper does, what lenses are, how to use keeper, or any question about keeper's features, modes, commands, memory model, or architecture. Also triggers on "explain keeper", "what is keeper", or "help with keeper".
 user-invokable: true
 disable-model-invocation: false
 ---
@@ -34,12 +34,13 @@ Output the Keeper Block:
                    │
                  sleep → encyclopedia
 
-🔧 setup    Bootstrap config + memory
-👀 scan     Read-only health check
-⚙️ run      Autonomous work loop
-🌙 sleep    Consolidate learnings
-🚀 deploy   Generate daemon scripts
-❓ help     You are here
+⚙️ setup      Bootstrap config + memory
+👀 scan       Read-only health check
+🎯 calibrate  Teach preferences
+▶️ run        Autonomous work loop
+🧬 sleep      Consolidate memory
+⏩ loop       Set up recurring runs
+❓ help       You are here
 
 📡 Supervised · Daemon · Nudge
 
@@ -71,7 +72,7 @@ Use AskUserQuestion:
   - **Lenses** — "The 12 analysis dimensions (8 code, 4 docs)"
   - **Memory** — "4 memory layers — working, short-term, long-term, procedural"
   - **Modes** — "Supervised, daemon, and nudge modes"
-  - (user can also type any question)
+  - **Workflows** — "Available workflow templates for /keeper:loop"
 
 ### Answering
 
@@ -81,6 +82,7 @@ For each question:
    - Lenses → read `lenses/*.md` frontmatter, build a table
    - Memory → read `personality.md` (memory model section) and `CLAUDE.md`
    - Modes → read `personality.md` (invocation context section)
+   - Workflows → read `workflows/*.md` frontmatter, list available templates with name, description, lenses, cadence. Also check `_keeper/workflows/*.md` for custom workflows.
    - Agents → read `agents/scanner.md` and `agents/doer.md` descriptions
    - PRs → read `skills/run/SKILL.md` Step 5 and Step 0.5
    - Skills → read the relevant `skills/*/SKILL.md` description line
@@ -122,7 +124,7 @@ Model per lens: haiku for simple work, sonnet for reasoning.
 Supervised  — you run /keeper:run in Claude Code.
               Keeper asks before acting. You approve PRs.
 
-Daemon      — deploy a tmux daemon via /keeper:deploy.
+Daemon      — set up recurring runs via /keeper:loop.
               Keeper works headless. Auto-creates PRs.
               Respects schedule + PR backpressure.
 

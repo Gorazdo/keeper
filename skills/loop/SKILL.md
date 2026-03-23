@@ -1,15 +1,15 @@
 ---
-name: deploy
-description: 🌿 Pick or create a workflow, get ready-to-use tmux commands for daemon mode. Use this skill when the user wants to run keeper in the background, set up a daemon, configure autonomous mode, or deploy a workflow.
+name: loop
+description: ⏩ Set up recurring keeper runs — pick or create a workflow, get /loop and tmux commands. Use this skill when the user wants to run keeper on a schedule, in the background, loop keeper, or configure autonomous mode.
 user-invokable: true
 disable-model-invocation: true
 ---
 
-# Keeper Deploy — Workflow Deployment
+# Keeper Loop — Recurring Runs
 
 Arguments: $ARGUMENTS (supports `--workflow <name>`)
 
-You help the user pick or create a workflow, then print the exact tmux commands to run it as a daemon. No file generation — just interactive setup and ready-to-paste commands.
+You help the user pick or create a workflow, then print the exact commands to run it on a recurring schedule. No file generation — just interactive setup and ready-to-paste commands.
 
 Follow the personality and output format from `personality.md`.
 
@@ -22,7 +22,7 @@ Follow the personality and output format from `personality.md`.
 Read `.keeperrc.json`. If missing:
 ```
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-🌿 Keeper | deploy | ⚠️ Not set up
+🌿 Keeper | loop | ⚠️ Not set up
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 Run /keeper:setup first.
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
@@ -36,17 +36,7 @@ Verify tmux is installed:
 command -v tmux
 ```
 
-If not found:
-```
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-🌿 Keeper | deploy | ⚠️ tmux not found
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-Install tmux first:
-  macOS:  brew install tmux
-  Ubuntu: sudo apt install tmux
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-```
-STOP.
+If not found, note it — tmux is only needed for the headless alternative. `/loop` works without it.
 
 Verify claude CLI is available:
 ```bash
@@ -70,22 +60,22 @@ If `--workflow <name>` was passed, skip to Step 2 with that workflow.
 ## Step 1: Choose or create workflow
 
 Use AskUserQuestion:
-- "Which workflow should the daemon run?"
+- "Which workflow should keeper loop with?"
   - **{name}** — "{description}" (one option per discovered workflow)
   - **Create new** — "Configure a custom workflow"
 
 ### If "Create new":
 
-#### 1a. Name
-Ask for a workflow name (lowercase, hyphens).
-
-#### 1b. Lenses
+#### 1a. Lenses
 Use AskUserQuestion:
 - "Which lenses?"
   - **All active** — all 12
   - **Code only** — 8 code lenses
   - **Docs only** — 4 docs lenses
   - **Custom** — let me pick
+
+#### 1b. Name
+Auto-suggest a name based on the lens selection (e.g., "docs-hygiene" for docs lenses, "code-quality" for code lenses). Ask for confirmation or custom name (lowercase, hyphens).
 
 #### 1c. Cadence
 Use AskUserQuestion:
@@ -139,7 +129,7 @@ Output:
 
 ```
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-🌿 Keeper v{version} | deploy | 🚀 {workflow name}
+🌿 Keeper v{version} | loop | ⏩ {workflow name}
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 Workflow: {name} — {description}
@@ -147,21 +137,28 @@ Lenses:  {list}
 Cadence: every {cadence}
 PR:      {create only | review by @{reviewer} | auto-merge ({strategy})}
 
-Start:
-  tmux new-session -d -s keeper-{name} -c {project-path} \
-    "while true; do claude -p '/keeper:run --workflow {name}'; sleep {seconds}; done"
+▸ Start with /loop:
 
-Check:  tmux has-session -t keeper-{name} 2>/dev/null && echo running || echo stopped
-Stop:   tmux kill-session -t keeper-{name}
-Watch:  tmux attach -t keeper-{name}
+    /loop {cadence} /keeper:run --workflow {name}
 
+▸ Headless alternative (tmux):
+
+    tmux new-session -d -s keeper-{name} -c {project-path} \
+      "while true; do claude -p '/keeper:run --workflow {name}'; sleep {seconds}; done"
+
+    Check:  tmux has-session -t keeper-{name} 2>/dev/null && echo running || echo stopped
+    Stop:   tmux kill-session -t keeper-{name}
+    Attach: tmux attach -t keeper-{name}
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+↘️ [?] /keeper:help
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 ```
 
-### Step 2b: Deploy another?
+### Step 2b: Watch another?
 
 Use AskUserQuestion:
-- "Deploy another workflow?"
+- "Set up another workflow?"
   - **Yes** — go back to Step 1
   - **No** — done
 
@@ -172,5 +169,5 @@ Use AskUserQuestion:
 1. **Always use AskUserQuestion.** This is an interactive skill — never guess settings.
 2. **Print commands, don't generate scripts.** The user copy-pastes what they need.
 3. **Detect, don't assume.** Auto-detect plugin path, project path, existing workflows.
-4. **Workflow files are the config.** Don't duplicate settings into `.keeperrc.json` deploy section.
+4. **Workflow files are the config.** Don't duplicate settings into `.keeperrc.json` loop section.
 5. **Frontmatter is structured.** Body text is for humans. Only parse frontmatter fields.

@@ -11,16 +11,17 @@ Autonomous repository hygiene agent. Scans, labels, untangles, and tends codebas
 ```
 keeper/
 ├── personality.md                   # Keeper voice, output format, principles
-├── .claude-plugin/plugin.json       # Plugin manifest v1.3.1
+├── .claude-plugin/plugin.json       # Plugin manifest v1.4.0
 ├── agents/
 │   ├── scanner.md                   # Unified multi-lens scanner (haiku)
 │   └── doer.md                      # Universal worker — all 12 lenses (model per lens)
-├── skills/                          # 7 skills (all user-invokable)
+├── skills/                          # 8 skills (all user-invokable)
 │   ├── setup/SKILL.md               # Bootstrap config + memory + encyclopedia
 │   ├── scan/SKILL.md                # Quick read-only health report
+│   ├── calibrate/SKILL.md           # Teach keeper your preferences
 │   ├── run/SKILL.md                 # Autonomous work loop
 │   ├── sleep/SKILL.md               # Memory consolidation + housekeeping
-│   ├── deploy/SKILL.md              # Workflow deployment helper
+│   ├── loop/SKILL.md                # Set up recurring runs
 │   ├── help/SKILL.md                # Visual overview + interactive Q&A
 │   └── complexity-scorer/SKILL.md   # SonarQube algorithm fallback
 ├── hooks/
@@ -55,9 +56,9 @@ keeper/
 
 | Mode | Trigger | Mechanism |
 |------|---------|-----------|
-| **+1 Onboarding** | User learns/configures | setup, help, scan skills |
+| **+1 Onboarding** | User learns/configures | setup, scan, calibrate, help skills |
 | **Supervised** | User invokes `/keeper:run` | run skill, doer agent |
-| **Daemon** | Workflow + tmux from deploy | run --workflow, tmux sessions |
+| **Daemon** | `/keeper:loop` sets up workflow | run --workflow via /loop or tmux |
 | **Nudge** | User edits a file | PostToolUse hook → collect → UserPromptSubmit hook → inject → haiku scanner |
 
 **Nudge mode:** Collect-then-analyze pipeline. PostToolUse (Write|Edit) runs `scripts/nudge-collect.sh` which appends the edited file path to `_keeper/nudge-queue.txt` (no analysis, just collection). When the user sends their next message after cooldown elapses (default 30 min), UserPromptSubmit runs `scripts/nudge-inject.sh` which outputs the queue as additional context. Claude then spawns a haiku scanner subagent scoped to those files, running only the configured nudge lenses (default: labelling, micro-hygiene, jsdoc). All detection logic stays in lenses — shell scripts do zero analysis. Guards: lock file (`_keeper/.lock`) prevents nudge during keeper operations.
@@ -135,7 +136,7 @@ Keeper tracks PRs it creates and reconciles them before each scan cycle.
 ## Key Patterns
 
 - Lenses define detection + agent assignment; PR batching strategy is orchestrator-level (run skill)
-- Progressive calibration: labelling and untangling calibrate on first supervised run (see `skills/run/SKILL.md` Step 0g); other lenses use config defaults
+- Progressive calibration: labelling and untangling calibrate via `/keeper:calibrate` (standalone skill); run defers to calibrate when uncalibrated lenses detected
 - One lens per PR ("midnight snacks")
 - Sleep consolidation: triage → consolidate → prune → integrate → plan → brief → housekeep
 - Backpressure gates: tests pass, coverage held, complexity down, signature unchanged
