@@ -141,7 +141,7 @@ Write `.keeperrc.json`:
   },
   "pr": {
     "maxFunctionsPerPr": 5,
-    "maxOpenPRs": 3,
+    "maxOpenBranches": 3,
     "branchPrefix": "keeper"
   },
   "nudge": {
@@ -186,7 +186,7 @@ Write `_keeper/memory.json`:
     "lastRun": null,
     "lastSleep": null,
     "pendingConsolidation": [],
-    "openPRs": []
+    "openBranches": []
   },
   "summary": ""
 }
@@ -250,9 +250,8 @@ Use AskUserQuestion:
   ✅ keeper-state (required) — keeper files: lock, queue, mkdir _keeper/
   ```
 - Options for optional tiers:
-  - **All (recommended for autonomous mode)** — approve git-write + github + test-runner
-  - **Git only** — approve git-write (manual PRs, no test running)
-  - **Git + tests** — approve git-write + test-runner (no GitHub CLI)
+  - **All (recommended)** — approve git-write + test-runner
+  - **Git only** — approve git-write (no test running)
   - **None** — keeper will prompt for each command (supervised only)
 
 ### 3c. Custom commands (optional)
@@ -279,7 +278,7 @@ Use AskUserQuestion:
 ```json
 {
   "toolbox": {
-    "approvedTiers": ["observe", "keeper-state", "git-write", "github", "test-runner"],
+    "approvedTiers": ["observe", "keeper-state", "git-write", "test-runner"],
     "customAllow": [],
     "customDeny": []
   }
@@ -334,34 +333,7 @@ lenses=labelling|micro-hygiene|jsdoc
 
 This file avoids JSON parsing in the hook scripts. Regenerate it on `--reconfigure`.
 
-### 4b. PR lifecycle defaults
-
-Use AskUserQuestion:
-- Question: "How should keeper handle PRs by default?"
-- Options:
-  - **Create only (recommended)** — "I'll review and merge myself"
-  - **Request review** — "Add a reviewer to each PR"
-  - **Full lifecycle** — "Request review + auto-merge when approved and CI passes"
-
-If "Request review" or "Full lifecycle": ask for reviewer username(s) (default: `copilot`).
-If "Full lifecycle": ask for merge strategy (`squash`, `merge`, `rebase`).
-
-Save to `.keeperrc.json` `pr` section:
-```json
-{
-  "pr": {
-    "maxFunctionsPerPr": 5,
-    "maxOpenPRs": 3,
-    "branchPrefix": "keeper",
-    "reviewers": ["copilot"],
-    "autoMerge": "squash"
-  }
-}
-```
-
-These defaults apply when running without a workflow. Workflows can override them.
-
-### 4c. Gitignore
+### 4b. Gitignore
 
 Use AskUserQuestion:
 - Question: "Add keeper files to .gitignore?"
@@ -372,7 +344,7 @@ Use AskUserQuestion:
 
 Apply choice to `.gitignore` (create if needed, append if exists).
 
-### 4d. Done
+### 4c. Done
 
 Update progress to 100%.
 

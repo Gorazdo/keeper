@@ -57,9 +57,9 @@ If `.keeperrc.json` exists, append a line before the bottom bar:
 {projectName} · {activeLenses.length} lenses active
 ```
 
-If `_keeper/memory.json` exists and has `sessions.openPRs` with entries, also show:
+If `_keeper/memory.json` exists and has `sessions.openBranches` with entries, also show:
 ```
-{N} PRs open
+{N} branches open
 ```
 
 ---

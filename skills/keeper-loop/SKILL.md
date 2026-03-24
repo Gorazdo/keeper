@@ -85,17 +85,7 @@ Use AskUserQuestion:
   - **Daily**
   - **Custom**
 
-#### 1d. PR lifecycle
-Use AskUserQuestion:
-- "How should PRs be handled?"
-  - **Create only** — I'll review and merge
-  - **Request review** — add reviewer, I'll merge
-  - **Full lifecycle** — request review + auto-merge when approved + CI green
-
-If "Request review" or "Full lifecycle": ask for reviewer username(s) (default: `copilot`).
-If "Full lifecycle": ask for merge strategy (`squash`, `merge`, `rebase`).
-
-#### 1e. Write workflow file
+#### 1d. Write workflow file
 
 Write to `_keeper/workflows/{name}.md` with frontmatter:
 
@@ -105,9 +95,7 @@ name: {name}
 description: {auto-generated from selections}
 cadence: {cadence}
 lenses: [{selected lenses}]
-reviewers: [{if configured}]
-auto-merge: {if configured}
-max-open-prs: {from config or default 3}
+max-open-branches: {from config or default 3}
 ---
 
 {Auto-generated human-readable summary}
@@ -135,7 +123,6 @@ Output:
 Workflow: {name} — {description}
 Lenses:  {list}
 Cadence: every {cadence}
-PR:      {create only | review by @{reviewer} | auto-merge ({strategy})}
 
 ▸ Start with /loop:
 

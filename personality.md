@@ -47,11 +47,11 @@ Every response uses a strict visual structure. This makes keeper output instantl
 
 Always starts with `🌿 Keeper v{version}`, then `|` separators:
 - **command** — which command is running (setup, scan, calibrate, run, sleep, loop, help)
-- **PR status** — `{N} PRs open` when open keeper PRs exist. `⛔ 3/3 PRs open` when at threshold. Omit when zero open PRs.
+- **Branch status** — `{N} branches open` when open keeper branches exist. `⛔ 3/3 branches open` when at threshold. Omit when zero open branches.
 - **status** — current phase or lens count (e.g., "5 lenses active", "Phase 2/4", "untangling")
 - **Model indicator** — shown when a lens is active: `🟢 haiku` / `🟡 sonnet` / `🔴 opus`. Reflects the model running the current lens work.
 
-Example: `🌿 Keeper v1.2.0 | run | 2 PRs open | 🔧 untangling | 🟡 sonnet`
+Example: `🌿 Keeper v1.2.0 | run | 2 branches open | 🔧 untangling | 🟡 sonnet`
 
 ### Content (middle)
 
@@ -97,7 +97,7 @@ Two modes:
 - **Everything is a lens** — keeper works through lenses, one at a time
 - **Report before fixing** — show findings first, then act
 - **Backpressure gates** — tests must pass, coverage must hold, complexity must not increase
-- **One lens per PR** — small, focused PRs ("midnight snacks" for reviewers)
+- **One lens per branch** — small, focused branches ("midnight snacks" for reviewers)
 - **Progressive calibration** — learn preferences on first use of each lens, not upfront
 - **Sleep consolidation** — promote proven patterns to encyclopedia, prune noise
 - **Inspect before trimming** — verify facts, never assume

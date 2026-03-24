@@ -1,6 +1,6 @@
 ---
 name: keeper-run
-description: ▶️ Autonomous work loop — scan across lenses, pick highest-priority targets, dispatch to agents, create focused PRs. Designed for /loop and tmux integration.
+description: ▶️ Autonomous work loop — scan across lenses, pick highest-priority targets, dispatch to agents in worktrees, push branches. Designed for /loop and tmux integration.
 user-invokable: true
 disable-model-invocation: false
 ---
@@ -9,7 +9,7 @@ disable-model-invocation: false
 
 Arguments: $ARGUMENTS (supports `--dry-run`, `--max-iterations N`, `--lens <name>`, `--workflow <name>`)
 
-You are the orchestrator for the keeper plugin. You run the outer loop: scan through active lenses, pick the highest-priority work, dispatch to the right agent, handle results, create PRs, update memory, and loop until done or sleeping hours.
+You are the orchestrator for the keeper plugin. You run the outer loop: scan through active lenses, pick the highest-priority work, dispatch to the right agent (in worktree isolation), handle results, push branches, update memory, and loop until done or sleeping hours.
 
 Follow the personality and output format from `personality.md`.
 
@@ -58,9 +58,7 @@ Search for the workflow file in order:
 
 Parse the frontmatter. Extract:
 - `lenses` → overrides active lenses for this run (like `--lens` but multiple)
-- `reviewers` → list of GitHub usernames to request review on PRs
-- `auto-merge` → merge strategy (`squash`, `merge`, `rebase`) — enables `gh pr merge --auto`
-- `max-open-prs` → overrides `pr.maxOpenPRs` for this run
+- `max-open-branches` → overrides `pr.maxOpenBranches` for this run
 - `cadence` → informational only (cadence is handled by the tmux loop, not by run)
 
 If the workflow file is not found, output error and STOP.
@@ -72,17 +70,13 @@ Check if running interactively (Claude Code) or autonomously (tmux/bash):
 - If running via `/loop` → **repeating mode** (supervised between cycles)
 - If neither → **autonomous mode** (no user interaction)
 
-### 0f. Git strategy (supervised mode only)
+### 0f. Detect default branch
 
-Use AskUserQuestion ONCE:
-- "Branch strategy for this session?"
-  - **Create branch** — keeper will create per-lens branches before each work batch
-  - **Current branch** — work on whatever's checked out (all commits land here)
-  - **Skip** — I'll handle git myself
+```bash
+git symbolic-ref refs/remotes/origin/HEAD | sed 's@^refs/remotes/origin/@@'
+```
 
-Record the choice as `gitStrategy` (`create-branch`, `current-branch`, or `skip`).
-
-In autonomous mode: always use `create-branch` strategy.
+Record as `defaultBranch` (e.g., `main`, `master`, `develop`). Fallback to `main` if detection fails.
 
 ### 0g. Calibration check
 
@@ -107,8 +101,7 @@ Check for missing optional tiers and degrade gracefully:
 
 | Missing Tier | Degradation |
 |---|---|
-| `git-write` | Force `gitStrategy` to `skip`. Doer makes changes but does not commit. Warn: "git-write tier not approved — commits disabled." |
-| `github` | Skip PR reconciliation (Step 0.5) and PR creation (Step 5). Warn: "github tier not approved — PRs disabled." |
+| `git-write` | Doer makes changes in worktree but does not commit or push. Warn: "git-write tier not approved — commits disabled." |
 | `test-runner` | Skip test validation (Step 0h). Disable test backpressure gate in doer context. Warn: "test-runner tier not approved — test gates disabled." |
 
 Pass the `approvedTiers` list to doer prompts so the doer knows its constraints.
@@ -132,7 +125,7 @@ Output:
 {projectName} · {N} lenses active
 Thresholds: CC ≤ {T}, coverage ≥ {T}%
 Max iterations: {N}
-Git strategy: {gitStrategy}
+Isolation: worktree (each lens batch gets its own branch)
 Toolbox: {N} tiers approved {warnings if any}
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
@@ -140,72 +133,58 @@ Toolbox: {N} tiers approved {warnings if any}
 
 ---
 
-## Step 0.5: PR Reconciliation
+## Step 0.5: Branch Reconciliation
 
-Before scanning, check the state of any open keeper PRs to avoid duplicate work and enforce backpressure.
+Before scanning, check the state of any open keeper branches to avoid duplicate work and enforce backpressure.
 
-### 0.5a. Query open PRs
+### 0.5a. Fetch and list remote keeper branches
 
 ```bash
-gh pr list --search "head:keeper/" --json number,title,headRefName,state,mergeable,createdAt
+git fetch --prune origin
+git branch -r --list "origin/keeper/*"
 ```
 
-**Graceful fallback:** If `gh` is unavailable or the command fails, skip the entire Step 0.5 with a warning:
+**Graceful fallback:** If fetch fails (no remote, network error), skip the entire Step 0.5 with a warning:
 ```
-⚠️ gh CLI unavailable — skipping PR reconciliation
+⚠️ git fetch failed — skipping branch reconciliation
 ```
 
-### 0.5b. Classify each PR
+### 0.5b. Classify each branch
 
-For each PR returned:
+Cross-reference remote branches against `sessions.openBranches[]` in memory:
 
-| State | Action |
-|-------|--------|
-| **merged** | Confirm in memory — move targets from `sessions.openPRs[]` to `refactoring.completedFunctions[]`. Remove PR entry. |
-| **open, mergeable** | Add to skip list — these targets are pending review. Keep PR entry as-is. |
-| **closed (not merged)** | Revert in memory — remove targets from `completedFunctions[]`, remove PR entry. These will be re-scanned. |
-| **open, conflicted** | Flag for human attention. In supervised mode: notify user. In autonomous mode: log warning. |
-
-### 0.5b-ext. Extended PR checks (workflow-driven)
-
-If a workflow is active, run additional checks on open PRs:
-
-**CI status:**
-```bash
-gh pr checks {number} --json name,state,conclusion
-```
-- All passed → PR is healthy, waiting for review
-- Any failed → flag for human attention in supervised mode, log warning in autonomous mode
-
-**Review status:**
-```bash
-gh pr view {number} --json reviews,reviewRequests
-```
-- Changes requested → flag for human attention (review feedback loop is deferred — keeper does not auto-fix review comments yet)
-- Approved → if auto-merge is enabled, GitHub handles it automatically
-
-Without a workflow, skip these extended checks (backwards compatible).
+| State | How to detect | Action |
+|-------|---------------|--------|
+| **merged** | Branch in `git branch -r --merged origin/{defaultBranch}` | Confirm in memory — move targets to `refactoring.completedFunctions[]`. Remove branch entry. |
+| **open** | Branch exists remotely, not merged | Add to skip list — these targets are pending review. Keep branch entry as-is. |
+| **gone** | In memory but not on remote | Check if branch commits are reachable from default branch (`git merge-base --is-ancestor`). If yes → treat as merged. If no → treat as closed/rejected — remove targets, remove entry. These will be re-scanned. |
 
 ### 0.5c. Backpressure gate
 
-Count open (non-merged, non-closed) keeper PRs. Compare against `pr.maxOpenPRs` (default: 3).
+Count open (unmerged, remote) keeper branches:
 
-If open PRs >= threshold:
-- **Supervised mode:** Ask user: `"⛔ {N}/{max} keeper PRs open. Wait for reviews or continue anyway?"`
+```bash
+git branch -r --list "origin/keeper/*" --no-merged origin/{defaultBranch} | wc -l
+```
+
+Compare against `pr.maxOpenBranches` (default: 3).
+
+If open branches >= threshold:
+- **Supervised mode:** Ask user: `"⛔ {N}/{max} keeper branches open. Wait for merges or continue anyway?"`
   - **Wait** — STOP, output status and exit
   - **Continue** — proceed (user takes responsibility)
 - **Autonomous mode:** STOP. Output:
 ```
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-🌿 Keeper | run | ⛔ {N}/{max} PRs open — paused
+🌿 Keeper | run | ⛔ {N}/{max} branches open — paused
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-Waiting for PR reviews before creating more work.
+Waiting for branch merges before creating more work.
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 ```
 
 ### 0.5d. Build in-flight skip list
 
-Collect all target functions/files from open PRs in `sessions.openPRs[]`. Pass this list to the scanner as "in-flight functions" to skip.
+Collect all target functions/files from open branches in `sessions.openBranches[]`. Pass this list to the scanner as "in-flight functions" to skip.
 
 ---
 
@@ -230,7 +209,7 @@ Rank all findings by severity across all lenses:
 | Priority | Criteria |
 |----------|----------|
 | Critical | Broken tests, swallowed errors on I/O, docs drift on exported APIs |
-| High | Complex functions (CC > 2× threshold), warning-level findings |
+| High | Complex functions (CC > 2x threshold), warning-level findings |
 | Medium | Moderate complexity, unlabeled files, missing JSDoc on public API |
 | Low | Suggestions, micro-hygiene, markdown formatting |
 
@@ -248,10 +227,10 @@ In supervised mode: Use AskUserQuestion:
 
 In autonomous mode: auto-select top priority lens.
 
-Output (include model indicator from lens frontmatter and PR count if applicable):
+Output (include model indicator from lens frontmatter and branch count if applicable):
 ```
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-🌿 Keeper | run | {N} PRs open | 🔧 {lens} | {model indicator}
+🌿 Keeper | run | {N} branches open | 🔧 {lens} | {model indicator}
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 ```
 
@@ -259,23 +238,9 @@ Model indicators: `🟢 haiku` / `🟡 sonnet` / `🔴 opus` — read from the a
 
 ---
 
-## Step 3.5: BRANCH (before work)
-
-If `gitStrategy` is `create-branch`:
-
-```bash
-git checkout -b keeper/{lens}-{YYYY-MM-DD-HHmm}
-```
-
-This ensures the doer's commits land on an isolated per-lens branch, not on main. If the branch already exists (e.g., retrying after a stall), check it out instead of creating.
-
-If `gitStrategy` is `current-branch` or `skip`: no branch change — commits land on the current branch.
-
----
-
 ## Step 4: WORK
 
-Dispatch to the lens's agent for a batch of targets (3-5 from the same lens).
+Dispatch to the lens's agent for a batch of targets (3-5 from the same lens). Each doer runs in worktree isolation — a fresh copy of the repo off the default branch.
 
 Read the active lens's frontmatter for `model:` and `spawn:` fields:
 - **model** — if it differs from the agent's default, pass as `model` override when spawning the agent
@@ -298,6 +263,7 @@ Build the doer prompt with full context:
 Spawn doer agent:
 - `subagent_type`: `keeper:doer`
 - `model`: from lens frontmatter `model:` field (override if different from agent default)
+- `isolation`: `"worktree"`
 - `description`: `{lens}: {functionName}`
 
 Process doer result:
@@ -323,6 +289,7 @@ Group unlabeled files into batches of ~20.
 Spawn doer agent in labelling mode:
 - `subagent_type`: `keeper:doer`
 - `model`: from lens frontmatter `model:` field (haiku)
+- `isolation`: `"worktree"`
 - `description`: `labelling: batch ({N} files)`
 - Provide: file paths, categories, header format, comment syntax, learned patterns, custom rules
 
@@ -332,41 +299,40 @@ After labelling a batch → go to Step 5.
 
 ### For other doc lenses (agent: doer)
 
-Spawn doer with the doc lens context. The doer handles JSDoc, markdown, and docs-coverage fixes the same way it handles code — one target at a time with verification.
+Spawn doer with the doc lens context and `isolation: "worktree"`. The doer handles JSDoc, markdown, and docs-coverage fixes the same way it handles code — one target at a time with verification.
 
 ---
 
-## Step 5: PR
+## Step 5: PUSH & PR DESCRIPTION
 
-Create a PR for the completed batch. One lens per PR.
+After the doer returns from the worktree, create a properly named branch, push it, and generate a PR description.
 
-The branch was already created in Step 3.5 — commits from the doer are already on `keeper/{lens}-{YYYY-MM-DD-HHmm}`.
+### 5a. Check for changes
 
-### Commit (if not already committed by doer)
+If the doer returned with no changes (worktree was auto-cleaned), skip to Step 6.
 
-For labelling batches:
+### 5b. Rename branch and push
+
+The doer worked on the worktree's auto-generated branch. Rename it and push:
+
 ```bash
-git add [modified files]
-git commit -m "docs(labelling): label {N} files as {categories}
-
-Lens: labelling
-Files: {N} labelled"
+# From the worktree directory
+git -C {worktree_path} branch -m keeper/{lens}-{YYYY-MM-DD-HHmm}
+git -C {worktree_path} push -u origin keeper/{lens}-{YYYY-MM-DD-HHmm}
 ```
 
-### PR creation
+If `git-write` tier is not approved, skip the push and warn: "Branch ready locally but not pushed — git-write tier not approved."
 
-In supervised mode: Use AskUserQuestion:
-- "Create PR for this batch?"
-  - **Create PR** — proceed
-  - **Skip PR** — keep commits, don't create PR
-  - **Continue working** — add more to this batch before PR
+### 5c. Generate PR description
 
-In autonomous mode: auto-create PR.
+Always generate this, regardless of platform:
 
-```bash
-gh pr create --title "{type}({lens}): {short description}" --body "$(cat <<'PREOF'
+```
+Title: {type}({lens}): {short description}
+
 ## Summary
 - **Lens**: {lens}
+- **Branch**: `keeper/{lens}-{YYYY-MM-DD-HHmm}`
 - **Files changed**: {N}
 - **Targets addressed**: {list}
 
@@ -377,36 +343,22 @@ gh pr create --title "{type}({lens}): {short description}" --body "$(cat <<'PREO
 {brief description of techniques applied}
 
 🌿 Generated by Keeper
-PREOF
-)"
 ```
 
-### PR lifecycle (workflow-driven)
+### 5d. Output
 
-After `gh pr create`, if a workflow is active:
+In supervised mode: Use AskUserQuestion:
+- "Branch `keeper/{lens}-{timestamp}` pushed. What next?"
+  - **I'll create the PR** — output title + description for copy-paste
+  - **Continue working** — add more to this batch before pushing
 
-**Reviewers** — if `reviewers` is set in the workflow:
-```bash
-gh pr edit {number} --add-reviewer {reviewer1},{reviewer2}
-```
+In autonomous mode: push automatically, log the PR description to `_keeper/output/autonomous/{lens}-{timestamp}.md`.
 
-**Auto-merge** — if `auto-merge` is set in the workflow:
-```bash
-gh pr merge {number} --auto --{strategy}
-```
+### 5e. Record to memory
 
-This tells GitHub to merge automatically when all checks pass and reviews are approved. Keeper doesn't wait — it moves on to the next batch.
-
-If no workflow is active, or the workflow doesn't specify reviewers/auto-merge, skip these steps (backwards compatible).
-
-After PR creation, record to `_keeper/memory.json` `sessions.openPRs[]`:
+Add to `_keeper/memory.json` `sessions.openBranches[]`:
 ```json
-{ "number": N, "lens": "...", "branch": "keeper/...", "targets": ["functionName@file:line", ...], "status": "pending", "createdAt": "YYYY-MM-DDTHH:mm:ssZ" }
-```
-
-Then switch back to main branch for next cycle:
-```bash
-git checkout {original branch}
+{ "branch": "keeper/{lens}-{timestamp}", "lens": "...", "targets": ["functionName@file:line", ...], "pushedAt": "YYYY-MM-DDTHH:mm:ssZ" }
 ```
 
 ---
@@ -472,9 +424,9 @@ Remove lock file: `rm -f _keeper/.lock`
 {For each result:}
 {✅|⚠️|🛑|⏱️} {target} — {lens} — {before}→{after}
 
-PRs created: {N}
-PRs open: {N} (of {max} allowed)
-PRs merged since last run: {N}
+Branches pushed: {N}
+Open branches: {N} (of {max} allowed)
+Merged since last run: {N}
 Commits: {total}
 Lenses worked: {list}
 
@@ -496,14 +448,14 @@ Memory updated: _keeper/memory.json
 
 1. **You are the orchestrator.** Spawn agents, don't refactor code yourself.
 2. **Re-scan after each batch.** Codebase changes. Get fresh results.
-3. **One lens per PR.** Never mix labelling and refactoring in one PR.
+3. **One lens per branch.** Never mix labelling and refactoring in one branch.
 4. **Parse agent reports carefully.** Extract all fields for memory updates.
 5. **Escalate honestly.** Sonnet → opus → human review. Don't spin.
 6. **Keep memory bounded.** Prune old entries.
-7. **Ask git strategy ONCE.** Not per function or lens.
+7. **Worktree isolation.** All doer work runs in worktrees. Never switch branches in the main working directory.
 8. **Show progress.** Output iteration headers and results.
 9. **Respect schedule.** If sleeping hours → consolidate and pause.
-10. **3-5 targets per lens batch.** Small PRs. Midnight snacks.
-11. **Reconcile PRs before scanning.** Always run Step 0.5 before Step 1. Never create duplicate work for targets with open PRs.
-12. **Respect PR backpressure.** If open PRs >= `pr.maxOpenPRs`, stop creating new work. Don't circumvent the gate.
+10. **3-5 targets per lens batch.** Small branches. Midnight snacks.
+11. **Reconcile branches before scanning.** Always run Step 0.5 before Step 1. Never create duplicate work for targets with open branches.
+12. **Respect branch backpressure.** If open branches >= `pr.maxOpenBranches`, stop creating new work. Don't circumvent the gate.
 13. **Lock file discipline.** Create `_keeper/.lock` at start, remove at end. This prevents nudge hooks from firing during runs.

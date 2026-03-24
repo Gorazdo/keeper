@@ -6,7 +6,7 @@ Autonomous repository hygiene agent. Scans, labels, untangles, and tends codebas
 
 **Everything is a lens.** A lens is a self-contained analysis dimension — what to detect, which agent handles fixes, how to package changes into PRs. Keeper has 12 lenses (8 code, 4 docs).
 
-**Command toolbox.** Shell commands are organized into risk-tiered groups in `toolbox.json`. During setup, the user approves tiers (observe, keeper-state, git-write, github, test-runner). Approved patterns are written to `.claude/settings.json` so agents run without prompting. Missing tiers trigger graceful degradation (e.g., no `git-write` → doer skips commits).
+**Command toolbox.** Shell commands are organized into risk-tiered groups in `toolbox.json`. During setup, the user approves tiers (observe, keeper-state, git-write, test-runner). Approved patterns are written to `.claude/settings.json` so agents run without prompting. Missing tiers trigger graceful degradation (e.g., no `git-write` → doer skips commits).
 
 ## Structure
 
@@ -32,7 +32,7 @@ keeper/
 ├── workflows/                       # Daemon workflow templates
 │   ├── code-quality.md              # Untangling + micro-hygiene + error-handling, 4h
 │   ├── docs-hygiene.md              # Labelling + jsdoc + docs-coverage, daily
-│   └── full-service.md              # All 12 lenses, 4h, copilot review, auto-merge
+│   └── full-service.md              # All 12 lenses, 4h, push branches for review
 ├── scripts/
 │   ├── lib.sh                        # Shared guards and helpers
 │   ├── nudge-collect.sh              # Append edited file paths to queue (no analysis)
@@ -95,7 +95,7 @@ keeper/
 ## Memory Model
 
 - **Working memory** = conversation context (ephemeral)
-- **Short-term** = `_keeper/memory.json` (session results, pending consolidation, open PR tracking via `sessions.openPRs[]`)
+- **Short-term** = `_keeper/memory.json` (session results, pending consolidation, open branch tracking via `sessions.openBranches[]`)
 - **Long-term** = `_keeper/encyclopedia/` (proven patterns, promoted during sleep)
 - **Procedural** = `.keeperrc.json` (calibrated preferences, thresholds)
 
@@ -124,26 +124,27 @@ Each lens declares its own `model:` and `spawn:` in frontmatter. The orchestrato
 
 **Fallback:** Lenses without `model:` use agent default. Without `spawn:` → treat as `none`.
 
-## PR Lifecycle
+## Branch & PR Lifecycle
 
-Keeper tracks PRs it creates and reconciles them before each scan cycle.
+Keeper uses worktree isolation for all doer work and git-native branch tracking (no `gh` CLI dependency — works with GitHub, Bitbucket, GitLab, etc.).
 
-1. **Create** — after each lens batch, `gh pr create` and record to `sessions.openPRs[]`
-2. **Reconcile** (Step 0.5 of run) — query `gh pr list --search "head:keeper/"`, classify each:
+1. **Work** — doer runs in a worktree (`isolation: "worktree"`), commits on an isolated branch
+2. **Push** — orchestrator pushes `keeper/{lens}-{date}` branch to origin
+3. **PR description** — generated and output for the user to create a PR on their platform
+4. **Reconcile** (Step 0.5 of run) — `git branch -r --list "origin/keeper/*"`, classify each:
    - **merged** → confirm in memory, move targets to completed
    - **open** → add targets to in-flight skip list
-   - **closed (rejected)** → revert memory, targets will be re-scanned
-   - **conflicted** → flag for human attention
-3. **Backpressure** — if open PRs >= `pr.maxOpenPRs` (default 3), stop creating new work
-4. **Fallback** — if `gh` CLI unavailable, skip reconciliation with warning
+   - **gone** → check if reachable from default branch; if yes → merged, if no → re-scan
+5. **Backpressure** — if open branches >= `pr.maxOpenBranches` (default 3), stop creating new work
 
 ## Key Patterns
 
-- Lenses define detection + agent assignment; PR batching strategy is orchestrator-level (run skill)
+- Lenses define detection + agent assignment; branch batching strategy is orchestrator-level (run skill)
 - Progressive calibration: labelling and untangling calibrate via `/keeper-calibrate` (standalone skill); run defers to calibrate when uncalibrated lenses detected
-- One lens per PR ("midnight snacks")
+- One lens per branch ("midnight snacks")
+- Worktree isolation: all doer work runs in temporary worktrees, never switching branches in main directory
 - Sleep consolidation: triage → consolidate → prune → integrate → plan → brief → housekeep
 - Backpressure gates: tests pass, coverage held, complexity down, signature unchanged
 - Escalation: sonnet stalls → opus + stall context
-- PR lifecycle: create → reconcile → backpressure gate
+- Branch lifecycle: worktree → push → reconcile → backpressure gate
 - Lock file (`_keeper/.lock`): created by run/scan/sleep, prevents nudge hooks from firing during operations

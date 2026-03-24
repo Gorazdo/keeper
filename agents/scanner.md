@@ -21,7 +21,7 @@ The invoking command provides you with:
 - Already-completed functions to skip (from memory)
 - Already-tagged files to skip (from memory, with content hashes)
 - Functions marked "human-review" to skip (from memory)
-- **In-flight functions** to skip (targets with open PRs — from PR reconciliation)
+- **In-flight functions** to skip (targets with open branches — from branch reconciliation)
 
 ## Your Algorithm
 
@@ -104,7 +104,7 @@ Floor at 0.1.
 ### Step 6: Skip Already-Processed and In-Flight
 
 Remove functions in "completed" or "human-review" lists (match by name AND file path).
-Remove functions in the **in-flight skip list** (targets with open PRs — match by name AND file path). These are being reviewed and must not be re-targeted.
+Remove functions in the **in-flight skip list** (targets with open branches — match by name AND file path). These are being reviewed and must not be re-targeted.
 For labelling: remove files in "tagged" list with matching content hash.
 
 ### Step 7: Sort and Output

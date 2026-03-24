@@ -1,7 +1,7 @@
 # keeper
 
 Autonomous repository hygiene agent for [Claude Code](https://docs.anthropic.com/en/docs/claude-code).
-Scans your codebase through **12 lenses**, creates small focused PRs while you sleep.
+Scans your codebase through **12 lenses**, pushes focused branches while you sleep.
 
 ## User Journey
 
@@ -9,13 +9,13 @@ Scans your codebase through **12 lenses**, creates small focused PRs while you s
 
 ```
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-🌿 Keeper v1.5.1 | setup | ✅ Complete
+🌿 Keeper v1.6.0 | setup | ✅ Complete
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 my-app · TypeScript/Next.js
 12 lenses active · test runner: vitest
 Nudge: enabled (30 min cooldown)
-Toolbox: 5 tiers approved (observe, keeper-state, git-write, github, test-runner)
+Toolbox: 4 tiers approved (observe, keeper-state, git-write, test-runner)
 
 Files created:
   .keeperrc.json          config + toolbox approvals
@@ -32,7 +32,7 @@ Files created:
 
 ```
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-🌿 Keeper v1.5.1 | scan | 12 lenses active
+🌿 Keeper v1.6.0 | scan | 12 lenses active
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 🔧 untangling      3 functions · processOrder CC 24
@@ -55,7 +55,7 @@ Top priorities:
 
 ```
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-🌿 Keeper v1.5.1 | run | 📊 Session Report
+🌿 Keeper v1.6.0 | run | 📊 Session Report
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 ✅ processOrder   — CC: 24→8   cov: 72%→86%
@@ -63,7 +63,7 @@ Top priorities:
 ✅ 14 files labelled with category headers
 ⚠️ handleWebhook — stalled (needs human review)
 
-PRs created: 2 · Commits: 7
+Branches pushed: 2 · Commits: 7
 Lenses worked: untangling, labelling
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
@@ -97,7 +97,7 @@ Lenses worked: untangling, labelling
 /keeper-setup      Bootstrap config, detect stack, approve command toolbox
 /keeper-scan       Read-only health report across active lenses
 /keeper-calibrate  Teach keeper your preferences (header format, refactoring style)
-/keeper-run        Autonomous loop — scan → pick → fix → PR → repeat
+/keeper-run        Autonomous loop — scan → pick → fix → push → repeat
 /keeper-sleep      Consolidate learnings into long-term memory
 /keeper-loop       Set up recurring runs with /loop or tmux
 /keeper-help       Visual overview + interactive Q&A

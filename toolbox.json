@@ -38,31 +38,18 @@
       "usedBy": ["run", "scan", "sleep", "setup", "nudge"]
     },
     "git-write": {
-      "description": "Git mutations — branch, stage, commit, push",
+      "description": "Git mutations — stage, commit, push, branch reconciliation",
       "risk": "medium",
       "required": false,
       "commands": [
         "Bash(git add *)",
         "Bash(git commit *)",
-        "Bash(git checkout -b keeper/*)",
-        "Bash(git checkout *)",
-        "Bash(git push *)"
+        "Bash(git checkout -- *)",
+        "Bash(git push *)",
+        "Bash(git fetch *)",
+        "Bash(git branch *)"
       ],
       "usedBy": ["doer", "run"]
-    },
-    "github": {
-      "description": "GitHub CLI — PR creation, review, merge",
-      "risk": "medium",
-      "required": false,
-      "commands": [
-        "Bash(gh pr list *)",
-        "Bash(gh pr create *)",
-        "Bash(gh pr edit *)",
-        "Bash(gh pr merge *)",
-        "Bash(gh pr checks *)",
-        "Bash(gh pr view *)"
-      ],
-      "usedBy": ["run"]
     },
     "test-runner": {
       "description": "Project test suite — vitest, jest, npm test",

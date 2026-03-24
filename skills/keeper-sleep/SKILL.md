@@ -274,7 +274,7 @@ Write the morning briefing to `_keeper/briefing.md`.
 
 ## Yesterday
 - {What was accomplished — lens by lens}
-- {PRs created, status}
+- {Branches pushed, status}
 - {Functions untangled, files labelled, docs fixed}
 
 ## Learned
